@@ -36,12 +36,17 @@ int main()
 		return -1;
 	}
 
-	glm::vec3 ambientLightColour = { 1.0f, 0.5f, 0.31f };
+	glm::vec3 ambientLightColor = { 1.0f, 0.5f, 0.31f };
 	float ambientStrength = 0.1f;
 
+	glm::vec3 lightPosition = { 50.0f, 10.0f, 15.0f };
+	glm::vec3 lightColor = { 0.8f, 0.8f, 0.8f };
+
 	shaderHandler->switchToShader(eShaderType::Default);
-	shaderHandler->setUniformVec3(eShaderType::Default, "uAmbientColor", ambientLightColour);
+	shaderHandler->setUniformVec3(eShaderType::Default, "uAmbientColor", ambientLightColor);
 	shaderHandler->setUniform1f(eShaderType::Default, "uAmbientStrength", ambientStrength);
+	shaderHandler->setUniformVec3(eShaderType::Default, "uLightPosition", lightPosition);
+	shaderHandler->setUniformVec3(eShaderType::Default, "uLightColor", lightColor);
 
 	Camera camera;
 	Mesh cube;
