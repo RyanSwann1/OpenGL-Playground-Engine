@@ -19,7 +19,9 @@ struct Mesh final : private NonCopyable, private NonMovable
 	int elementBufferIndex;
 	unsigned int vaoID;
 	unsigned int positionsID;
+	unsigned int normalsID;
 	unsigned int indiciesID;
 	std::vector<glm::vec3> positions;
+	std::vector<glm::vec3> normals;
 	std::vector<unsigned int> indicies;
 };

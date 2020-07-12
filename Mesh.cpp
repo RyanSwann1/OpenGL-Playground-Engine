@@ -4,12 +4,14 @@ Mesh::Mesh()
 	: elementBufferIndex(0),
 	vaoID(Globals::INVALID_OPENGL_ID),
 	positionsID(Globals::INVALID_OPENGL_ID),
+	normalsID(Globals::INVALID_OPENGL_ID),
 	indiciesID(Globals::INVALID_OPENGL_ID),
 	positions(),
 	indicies()
 {
 	glGenVertexArrays(1, &vaoID);
 	glGenBuffers(1, &positionsID);
+	glGenBuffers(1, &normalsID);
 	glGenBuffers(1, &indiciesID);
 }
 
@@ -20,6 +22,9 @@ Mesh::~Mesh()
 
 	assert(postiionsID != Globals::INVALID_OPENGL_ID);
 	glDeleteBuffers(1, &positionsID);
+
+	assert(normalsID != Globals::INVALID_OPENGL_ID);
+	glDeleteBuffers(1, &normalsID);
 
 	assert(indiciesID != Globals::INVALID_OPENGL_ID);
 	glDeleteBuffers(1, &indiciesID);
@@ -41,12 +46,21 @@ void Mesh::attachToVAO()
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (const void*)0);
 
+	glBindBuffer(GL_ARRAY_BUFFER, normalsID);
+	glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), normals.data(), GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (const void*)0);
+
 	assert(!indicies.empty());
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indiciesID);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicies.size() * sizeof(unsigned int), indicies.data(), GL_STATIC_DRAW);
 
 	std::vector<glm::vec3> tempPositions;
 	positions.swap(tempPositions);
+
+	std::vector<glm::vec3> tempNormals;
+	normals.swap(tempNormals);
 
 	indicies.shrink_to_fit();
 
