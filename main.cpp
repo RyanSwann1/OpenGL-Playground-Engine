@@ -1,7 +1,11 @@
 #include "Globals.h"
 #include "SFML/Graphics.hpp"
 #include "glad.h"
+#include "glm/gtc/matrix_transform.hpp"
 #include "ShaderHandler.h"
+#include "MeshGenerator.h"
+#include "Mesh.h"
+#include "Camera.h"
 #include <vector>
 #include <iostream>
 
@@ -14,11 +18,15 @@ int main()
 	settings.majorVersion = 3;
 	settings.minorVersion = 3;
 	settings.attributeFlags = sf::ContextSettings::Core;
-	glm::uvec2 windowSize(640, 480);
+	glm::uvec2 windowSize(1280, 720);
 	sf::Window window(sf::VideoMode(windowSize.x, windowSize.y), "OpenGL Playground", sf::Style::Default, settings);
 	window.setFramerateLimit(60);
+	window.setMouseCursorVisible(false);
+
 	gladLoadGL();
 	glViewport(0, 0, windowSize.x, windowSize.y);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 
 	std::unique_ptr<ShaderHandler> shaderHandler = ShaderHandler::create();
 	assert(shaderHandler);
@@ -30,22 +38,15 @@ int main()
 
 	shaderHandler->switchToShader(eShaderType::Default);
 
-	unsigned int vaoID = Globals::INVALID_OPENGL_ID;
-	glGenVertexArrays(1, &vaoID);
-	glBindVertexArray(vaoID);
+	Camera camera;
+	Mesh cube;
 
-	std::vector<glm::vec2> positions;
-	positions.insert(positions.end(), Globals::QUAD_COORDS.begin(), Globals::QUAD_COORDS.end());
-	unsigned int positionsID = Globals::INVALID_OPENGL_ID;
-	glGenBuffers(1, &positionsID);
-	glBindBuffer(GL_ARRAY_BUFFER, positionsID);
-	glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(glm::vec2), positions.data(), GL_STATIC_DRAW);
+	MeshGenerator::generateCubeMesh({ 0, 0, 10.0f }, cube);
 
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (const void*)0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+	std::cout << glGetError() << "\n";
+	std::cout << glGetError() << "\n";
+	std::cout << glGetError() << "\n";
+	std::cout << glGetError() << "\n";
 
 	while (window.isOpen())
 	{
@@ -56,17 +57,28 @@ int main()
 			{
 				window.close();
 			}
+			else if (currentSFMLEvent.type == sf::Event::KeyPressed &&
+				currentSFMLEvent.key.code == sf::Keyboard::Escape)
+			{
+				window.close();
+			}
 		}
 
-		glClear(GL_COLOR_BUFFER_BIT);
-		glBindVertexArray(vaoID);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+		camera.update(window);
+
+		glm::mat4 view = glm::lookAt(camera.position, camera.position + camera.front, camera.up);
+		glm::mat4 projection = glm::perspective(glm::radians(camera.FOV),
+			static_cast<float>(windowSize.x) / static_cast<float>(windowSize.y), camera.nearPlaneDistance, camera.farPlaneDistance);
+
+		shaderHandler->setUniformMat4f(eShaderType::Default, "uProjection", projection);
+		shaderHandler->setUniformMat4f(eShaderType::Default, "uView", view);
+
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		cube.render();
 
 		window.display();
 	}
-
-	glDeleteVertexArrays(1, &vaoID);
-	glDeleteBuffers(1, &positionsID);
 
 	return 0;
 }

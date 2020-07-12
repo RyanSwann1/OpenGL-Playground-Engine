@@ -15,7 +15,7 @@ enum class eShaderType
 	Max = Default
 };
 
-class ShaderHandler : private NonCopyable, private NonMovable
+class ShaderHandler final : private NonCopyable, private NonMovable
 {
 	class Shader : private NonCopyable
 	{
