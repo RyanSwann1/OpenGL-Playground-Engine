@@ -129,6 +129,14 @@ void ShaderHandler::setUniformMat4f(eShaderType shaderType, const std::string& u
 	glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
+void ShaderHandler::setUniformVec3(eShaderType shaderType, const std::string& uniformName, const glm::vec3& v)
+{
+	assert(shaderType == m_currentShaderType);
+	int uniformLocation = m_shader[static_cast<int>(shaderType)].getUniformLocation(uniformName);
+	assert(uniformLocation != INVALID_UNIFORM_LOCATION);
+	glUniform3fv(uniformLocation, 1, &v[0]);
+}
+
 void ShaderHandler::setUniform1i(eShaderType shaderType, const std::string& uniformName, int value)
 {
 	assert(shaderType == m_currentShaderType);

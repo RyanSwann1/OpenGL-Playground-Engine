@@ -36,12 +36,19 @@ int main()
 		return -1;
 	}
 
+	glm::vec3 ambientLightColour = { 1.0f, 0.5f, 0.31f };
+	float ambientStrength = 0.1f;
+
 	shaderHandler->switchToShader(eShaderType::Default);
+	shaderHandler->setUniformVec3(eShaderType::Default, "uAmbientColor", ambientLightColour);
+	shaderHandler->setUniform1f(eShaderType::Default, "uAmbientStrength", ambientStrength);
 
 	Camera camera;
 	Mesh cube;
+	Mesh cube2;
 
 	MeshGenerator::generateCubeMesh({ 0, 0, 10.0f }, cube);
+	MeshGenerator::generateCubeMesh({ 0, 0, 20.0f }, cube2);
 
 	std::cout << glGetError() << "\n";
 	std::cout << glGetError() << "\n";
@@ -73,9 +80,9 @@ int main()
 		shaderHandler->setUniformMat4f(eShaderType::Default, "uProjection", projection);
 		shaderHandler->setUniformMat4f(eShaderType::Default, "uView", view);
 
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		cube.render();
+		cube2.render();
 
 		window.display();
 	}
