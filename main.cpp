@@ -36,24 +36,12 @@ int main()
 		return -1;
 	}
 
-	glm::vec3 ambientLightColor = { 1.0f, 0.5f, 0.31f };
-	float ambientStrength = 0.1f;
+	sf::Clock clock;
+	Camera camera;
 
-	glm::vec3 lightPosition = { 50.0f, 10.0f, 15.0f };
-	glm::vec3 lightColor = { 0.8f, 0.8f, 0.8f };
+	clock.restart();
 
 	shaderHandler->switchToShader(eShaderType::Default);
-	shaderHandler->setUniformVec3(eShaderType::Default, "uAmbientColor", ambientLightColor);
-	shaderHandler->setUniform1f(eShaderType::Default, "uAmbientStrength", ambientStrength);
-	shaderHandler->setUniformVec3(eShaderType::Default, "uLightPosition", lightPosition);
-	shaderHandler->setUniformVec3(eShaderType::Default, "uLightColor", lightColor);
-
-	Camera camera;
-	Mesh cube;
-	Mesh cube2;
-
-	MeshGenerator::generateCubeMesh({ 0, 0, 10.0f }, cube);
-	MeshGenerator::generateCubeMesh({ 0, 0, 20.0f }, cube2);
 
 	std::cout << glGetError() << "\n";
 	std::cout << glGetError() << "\n";
@@ -62,6 +50,7 @@ int main()
 
 	while (window.isOpen())
 	{
+		float deltaTime = clock.restart().asSeconds();
 		sf::Event currentSFMLEvent;
 		while (window.pollEvent(currentSFMLEvent))
 		{
@@ -76,7 +65,7 @@ int main()
 			}
 		}
 
-		camera.update(window);
+		camera.update(deltaTime, window);
 
 		glm::mat4 view = glm::lookAt(camera.position, camera.position + camera.front, camera.up);
 		glm::mat4 projection = glm::perspective(glm::radians(camera.FOV),
@@ -86,8 +75,6 @@ int main()
 		shaderHandler->setUniformMat4f(eShaderType::Default, "uView", view);
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		cube.render();
-		cube2.render();
 
 		window.display();
 	}

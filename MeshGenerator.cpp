@@ -79,21 +79,21 @@ namespace
 	};
 }
 
-void generateCubeFace(const glm::vec3& position, eCubeFace cubeFace, Mesh& mesh);
+void generateCubeFace(eCubeFace cubeFace, Mesh& mesh);
 
-void MeshGenerator::generateCubeMesh(const glm::vec3& position, Mesh& mesh)
+void MeshGenerator::generateCubeMesh(Mesh& mesh)
 {
-	generateCubeFace(position, eCubeFace::Left, mesh);
-	generateCubeFace(position, eCubeFace::Right, mesh);
-	generateCubeFace(position, eCubeFace::Top, mesh);
-	generateCubeFace(position, eCubeFace::Bottom, mesh);
-	generateCubeFace(position, eCubeFace::Back, mesh);
-	generateCubeFace(position, eCubeFace::Front, mesh);
+	generateCubeFace(eCubeFace::Left, mesh);
+	generateCubeFace(eCubeFace::Right, mesh);
+	generateCubeFace(eCubeFace::Top, mesh);
+	generateCubeFace(eCubeFace::Bottom, mesh);
+	generateCubeFace(eCubeFace::Back, mesh);
+	generateCubeFace(eCubeFace::Front, mesh);
 
 	mesh.attachToVAO();
 }
 
-void generateCubeFace(const glm::vec3& position, eCubeFace cubeFace, Mesh& mesh)
+void generateCubeFace(eCubeFace cubeFace, Mesh& mesh)
 {
 	switch (cubeFace)
 	{
@@ -101,7 +101,7 @@ void generateCubeFace(const glm::vec3& position, eCubeFace cubeFace, Mesh& mesh)
 	{
 		for (const auto& i : CUBE_FACE_LEFT)
 		{
-			mesh.positions.emplace_back(i + position);
+			mesh.positions.push_back(i);
 			mesh.normals.push_back(CUBE_FACE_LEFT_NORMAL);
 		}
 	}
@@ -110,7 +110,7 @@ void generateCubeFace(const glm::vec3& position, eCubeFace cubeFace, Mesh& mesh)
 	{
 		for (const auto& i : CUBE_FACE_RIGHT)
 		{
-			mesh.positions.emplace_back(i + position);
+			mesh.positions.push_back(i);
 			mesh.normals.push_back(CUBE_FACE_RIGHT_NORMAL);
 		}
 	}
@@ -119,7 +119,7 @@ void generateCubeFace(const glm::vec3& position, eCubeFace cubeFace, Mesh& mesh)
 	{
 		for (const auto& i : CUBE_FACE_TOP)
 		{
-			mesh.positions.emplace_back(i + position);
+			mesh.positions.push_back(i);
 			mesh.normals.push_back(CUBE_FACE_TOP_NORMAL);
 		}
 	}
@@ -128,7 +128,7 @@ void generateCubeFace(const glm::vec3& position, eCubeFace cubeFace, Mesh& mesh)
 	{
 		for (const auto& i : CUBE_FACE_BOTTOM)
 		{
-			mesh.positions.emplace_back(i + position);
+			mesh.positions.push_back(i);
 			mesh.normals.push_back(CUBE_FACE_BOTTOM_NORMAL);
 		}
 	}
@@ -137,7 +137,7 @@ void generateCubeFace(const glm::vec3& position, eCubeFace cubeFace, Mesh& mesh)
 	{
 		for (const auto& i : CUBE_FACE_FRONT)
 		{
-			mesh.positions.emplace_back(i + position);
+			mesh.positions.push_back(i);
 			mesh.normals.push_back(CUBE_FACE_FRONT_NORMAL);
 		}
 	}
@@ -146,7 +146,7 @@ void generateCubeFace(const glm::vec3& position, eCubeFace cubeFace, Mesh& mesh)
 	{
 		for (const auto& i : CUBE_FACE_BACK)
 		{
-			mesh.positions.emplace_back(i + position);
+			mesh.positions.push_back(i);
 			mesh.normals.push_back(CUBE_FACE_BACK_NORMAL);
 		}
 	}

@@ -1,27 +1,55 @@
 #pragma once
 
-#include "Globals.h"
 #include "NonCopyable.h"
 #include "NonMovable.h"
 #include "glm/glm.hpp"
-#include "glad.h"
 #include <vector>
+#include <string>
 
-struct Mesh final : private NonCopyable, private NonMovable
+//https://vulkan-tutorial.com/Loading_models
+
+struct Material 
+{
+	glm::vec3 Diffuse;
+};
+
+struct MeshTextureDetails
+{
+	MeshTextureDetails(unsigned int ID, const std::string& type, const std::string& path);
+
+	unsigned int ID;
+	std::string type;
+	std::string path;  // we store the path of the texture to compare with other textures
+};
+
+struct Vertex
+{
+	Vertex(const glm::vec3& position);
+	Vertex(const glm::vec3& position, const glm::vec3& normal, const glm::vec2& textCoords);
+
+	glm::vec3 position;
+	glm::vec3 normal;
+	glm::vec2 textCoords;
+};
+
+class ShaderHandler;
+struct Mesh : private NonCopyable
 {
 	Mesh();
+	Mesh(std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices, std::vector<MeshTextureDetails>&& textures, const Material& material);
+	Mesh(Mesh&&) noexcept;
+	Mesh& operator=(Mesh&&) noexcept;
 	~Mesh();
 
 	void bind() const;
-	void attachToVAO();
-	void render() const;
+	void attachToVAO() const;
+	void render(ShaderHandler& shaderHandler, bool selected = false) const;
 
-	int elementBufferIndex;
 	unsigned int vaoID;
-	unsigned int positionsID;
-	unsigned int normalsID;
+	unsigned int vboID;
 	unsigned int indiciesID;
-	std::vector<glm::vec3> positions;
-	std::vector<glm::vec3> normals;
-	std::vector<unsigned int> indicies;
+	std::vector<Vertex> vertices;
+	std::vector<unsigned int> indices;
+	std::vector<MeshTextureDetails> textures;
+	Material material;
 };

@@ -12,7 +12,9 @@
 enum class eShaderType
 {
 	Default = 0,
-	Max = Default
+	SelectionBox,
+	Debug,
+	Max = Debug
 };
 
 class ShaderHandler final : private NonCopyable, private NonMovable
@@ -21,8 +23,6 @@ class ShaderHandler final : private NonCopyable, private NonMovable
 	{
 	public:
 		Shader(eShaderType shaderType);
-		Shader(Shader&&) noexcept;
-		Shader& operator=(Shader&&) noexcept;
 		~Shader();
 
 		unsigned int getID() const;
@@ -38,6 +38,8 @@ class ShaderHandler final : private NonCopyable, private NonMovable
 public:
 	static std::unique_ptr<ShaderHandler> create();
 
+	eShaderType getActiveShaderType() const;
+
 	void setUniformMat4f(eShaderType shaderType, const std::string& uniformName, const glm::mat4& matrix);
 	void setUniformVec3(eShaderType shaderType, const std::string& uniformName, const glm::vec3& v);
 	void setUniform1i(eShaderType shaderType, const std::string& uniformName, int value);
@@ -48,8 +50,10 @@ private:
 	ShaderHandler();
 	eShaderType m_currentShaderType;
 
-	std::array<Shader, static_cast<int>(eShaderType::Max) + 1> m_shader =
+	std::array<Shader, static_cast<int>(eShaderType::Max) + 1> m_shaders =
 	{
-		eShaderType::Default
+		eShaderType::Default,
+		eShaderType::SelectionBox,
+		eShaderType::Debug
 	};
 };

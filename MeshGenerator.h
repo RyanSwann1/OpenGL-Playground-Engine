@@ -6,5 +6,5 @@
 struct Mesh;
 namespace MeshGenerator
 {
-	void generateCubeMesh(const glm::vec3& position, Mesh& mesh);
+	void generateCubeMesh(Mesh& mesh);
 }
