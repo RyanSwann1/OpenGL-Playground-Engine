@@ -2,12 +2,9 @@
 #include "Globals.h"
 #include "glad.h"
 #include "ShaderHandler.h"
+#include <iostream>
 
-namespace
-{
-	constexpr float SELECTED_MESH_AMPLIFIER = 1.75f;
-}
-
+//Mesh
 Mesh::Mesh()
 	: vaoID(Globals::INVALID_OPENGL_ID),
 	vboID(Globals::INVALID_OPENGL_ID),
@@ -112,63 +109,80 @@ void Mesh::attachToVAO() const
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
 }
 
-void Mesh::render(ShaderHandler& shaderHandler, bool selected) const
+void Mesh::render(ShaderHandler& shaderHandler) const
 {
-	if (!textures.empty())
-	{
-		assert(textures.size() == static_cast<size_t>(1));
-		glBindTexture(GL_TEXTURE_2D, textures.front().ID);
+	bind();
+	shaderHandler.setUniform1i(eShaderType::Default, "diffuseTexture", static_cast<int>(false));
+	shaderHandler.setUniform1i(eShaderType::Default, "specularTexture", static_cast<int>(false));
 
-		assert(!indices.empty());
-		bind();
-		switch (shaderHandler.getActiveShaderType())
-		{
-		case eShaderType::Default:
-			shaderHandler.setUniformVec3(eShaderType::Default, "uMaterialColour", { 1.0f, 1.0f, 1.0f });
-			break;
-		default:
-			assert(false);
-		}
-		
+	auto textureDiffuse = std::find_if(textures.cbegin(), textures.cend(), [](const auto& texture)
+	{
+		return texture.type == "texture_diffuse";
+	});
+	if (textureDiffuse != textures.cend())
+	{
+		shaderHandler.setUniform1i(eShaderType::Default, "diffuseTexture", static_cast<int>(true));
+		glBindTexture(GL_TEXTURE_2D, textureDiffuse->ID);
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);
 	}
-	else
-	{
-		assert(!indices.empty());
-		bind();
-		switch (shaderHandler.getActiveShaderType())
-		{
-		case eShaderType::Default:
-			shaderHandler.setUniformVec3(eShaderType::Default, "uMaterialColour", material.Diffuse);
 
-			if (selected)
-			{
-				shaderHandler.setUniform1f(eShaderType::Default, "uSelectedAmplifier", SELECTED_MESH_AMPLIFIER);
-			}
-			else
-			{
-				shaderHandler.setUniform1f(eShaderType::Default, "uSelectedAmplifier", 1.0f);
-			}
-			break;
-		}
+	auto textureSpecular = std::find_if(textures.cbegin(), textures.cend(), [](const auto& texture)
+	{
+		return texture.type == "texture_specular";
+	});
+	if (textureSpecular != textures.cend())
+	{
+		shaderHandler.setUniform1i(eShaderType::Default, "specularTexture", static_cast<int>(true));
+		glBindTexture(GL_TEXTURE_2D, textureSpecular->ID);
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);
 	}
 }
 
-Vertex::Vertex(const glm::vec3& position)
-	: position(position),
-	normal(),
-	textCoords()
-{}
-
+//Vertex
 Vertex::Vertex(const glm::vec3& position, const glm::vec3& normal, const glm::vec2& textCoords)
 	: position(position),
 	normal(normal),
 	textCoords(textCoords)
 {}
 
+//MeshTextureDetails
 MeshTextureDetails::MeshTextureDetails(unsigned int ID, const std::string& type, const std::string& path)
 	: ID(ID),
 	type(type),
 	path(path)
+{}
+
+MeshTextureDetails::MeshTextureDetails(MeshTextureDetails&& orig) noexcept
+	: ID(orig.ID),
+	type(orig.type),
+	path(std::move(orig.path))
+{
+	orig.ID = Globals::INVALID_OPENGL_ID;
+}
+
+MeshTextureDetails& MeshTextureDetails::operator=(MeshTextureDetails&& orig) noexcept
+{
+	ID = orig.ID;
+	type = orig.type;
+	path = std::move(orig.path);
+
+	orig.ID = Globals::INVALID_OPENGL_ID;
+
+	return *this;
+}
+
+MeshTextureDetails::~MeshTextureDetails()
+{
+	if (ID != Globals::INVALID_OPENGL_ID)
+	{
+		glDeleteTextures(1, &ID);
+	}
+}
+
+//Materu
+Material::Material()
+	: diffuse(),
+	specular(),
+	ambient(),
+	shininess(0.0f)
 {}

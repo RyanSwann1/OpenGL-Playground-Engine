@@ -10,21 +10,28 @@
 
 struct Material 
 {
-	glm::vec3 Diffuse;
+	Material();
+
+	glm::vec3 diffuse;
+	glm::vec3 specular;
+	glm::vec3 ambient;
+	float shininess;
 };
 
-struct MeshTextureDetails
+struct MeshTextureDetails : private NonCopyable
 {
 	MeshTextureDetails(unsigned int ID, const std::string& type, const std::string& path);
+	MeshTextureDetails(MeshTextureDetails&&) noexcept;
+	MeshTextureDetails& operator=(MeshTextureDetails&&) noexcept;
+	~MeshTextureDetails();
 
 	unsigned int ID;
 	std::string type;
-	std::string path;  // we store the path of the texture to compare with other textures
+	std::string path;
 };
 
 struct Vertex
 {
-	Vertex(const glm::vec3& position);
 	Vertex(const glm::vec3& position, const glm::vec3& normal, const glm::vec2& textCoords);
 
 	glm::vec3 position;
@@ -43,7 +50,7 @@ struct Mesh : private NonCopyable
 
 	void bind() const;
 	void attachToVAO() const;
-	void render(ShaderHandler& shaderHandler, bool selected = false) const;
+	void render(ShaderHandler& shaderHandler) const;
 
 	unsigned int vaoID;
 	unsigned int vboID;
