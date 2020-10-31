@@ -3,22 +3,32 @@
 out vec4 color;
 
 in vec2 vTextCoords;
+in vec3 vNormal;
 
 uniform sampler2D texture_diffuse;
 uniform sampler2D texture_specular;
 
-uniform bool diffuseTexture;
-uniform bool specularTexture;
+uniform bool uDiffuseTexture;
+uniform bool uSpecularTexture;
+uniform vec3 uMaterialColor;
 
 void main()
 {
-	if(diffuseTexture)
+	if(uDiffuseTexture)
 	{
 		color = texture(texture_diffuse, vTextCoords);
 	}
 
-	if(specularTexture)
+	if(uSpecularTexture)
 	{
 		color = texture(texture_specular, vTextCoords);
+	}
+
+	if(!uDiffuseTexture && !uSpecularTexture)
+	{
+		float dotFactor = dot(vNormal, vec3(0.0, 1.0, 0.0)) * 0.5 + 0.5;
+		float darkenFactor = 0.5 + dotFactor * (1.0 - 0.5);
+		vec3 outputColour = uMaterialColor * darkenFactor;
+		color = vec4(outputColour, 1.0);
 	}
 };
