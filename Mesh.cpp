@@ -112,28 +112,35 @@ void Mesh::attachToVAO() const
 void Mesh::render(ShaderHandler& shaderHandler) const
 {
 	bind();
-	shaderHandler.setUniform1i(eShaderType::Default, "diffuseTexture", static_cast<int>(false));
-	shaderHandler.setUniform1i(eShaderType::Default, "specularTexture", static_cast<int>(false));
+	shaderHandler.setUniform1i(eShaderType::Default, "uDiffuseTexture", static_cast<int>(false));
+	shaderHandler.setUniform1i(eShaderType::Default, "uSpecularTexture", static_cast<int>(false));
+	if(!textures.empty())
+	{ 
+		auto textureDiffuse = std::find_if(textures.cbegin(), textures.cend(), [](const auto& texture)
+		{
+			return texture.type == "texture_diffuse";
+		});
+		if (textureDiffuse != textures.cend())
+		{
+			shaderHandler.setUniform1i(eShaderType::Default, "uDiffuseTexture", static_cast<int>(true));
+			glBindTexture(GL_TEXTURE_2D, textureDiffuse->ID);
+			glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);
+		}
 
-	auto textureDiffuse = std::find_if(textures.cbegin(), textures.cend(), [](const auto& texture)
-	{
-		return texture.type == "texture_diffuse";
-	});
-	if (textureDiffuse != textures.cend())
-	{
-		shaderHandler.setUniform1i(eShaderType::Default, "diffuseTexture", static_cast<int>(true));
-		glBindTexture(GL_TEXTURE_2D, textureDiffuse->ID);
-		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);
+		auto textureSpecular = std::find_if(textures.cbegin(), textures.cend(), [](const auto& texture)
+		{
+			return texture.type == "texture_specular";
+		});
+		if (textureSpecular != textures.cend())
+		{
+			shaderHandler.setUniform1i(eShaderType::Default, "uSpecularTexture", static_cast<int>(true));
+			glBindTexture(GL_TEXTURE_2D, textureSpecular->ID);
+			glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);
+		}
 	}
-
-	auto textureSpecular = std::find_if(textures.cbegin(), textures.cend(), [](const auto& texture)
+	else
 	{
-		return texture.type == "texture_specular";
-	});
-	if (textureSpecular != textures.cend())
-	{
-		shaderHandler.setUniform1i(eShaderType::Default, "specularTexture", static_cast<int>(true));
-		glBindTexture(GL_TEXTURE_2D, textureSpecular->ID);
+		shaderHandler.setUniformVec3(eShaderType::Default, "uMaterialColor", material.diffuse);
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);
 	}
 }
