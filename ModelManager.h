@@ -6,7 +6,9 @@
 
 extern const std::string SPONZA_MODEL_NAME;
 extern const std::string STANFORD_BUNNY_MODEL_NAME;
-inline const size_t MAX_MODELS = 2;
+extern const std::string STANFORD_DRAGON_MODEL_NAME;
+extern const std::string LUCY_STATUE_MODEL_NAME;
+inline const size_t MAX_MODELS = 4;
 
 class ModelManager : private NonCopyable, private NonMovable
 {

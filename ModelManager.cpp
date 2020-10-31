@@ -4,6 +4,8 @@
 
 const std::string SPONZA_MODEL_NAME = "sponza.obj";
 const std::string STANFORD_BUNNY_MODEL_NAME = "stanford-bunny.obj";
+const std::string STANFORD_DRAGON_MODEL_NAME = "stanford-dragon.obj";
+const std::string LUCY_STATUE_MODEL_NAME = "metallic-lucy-statue-stanford-scan.obj";
 
 namespace 
 {	
@@ -42,6 +44,8 @@ namespace
 
 		loadModel(SPONZA_MODEL_NAME, models);
 		loadModel(STANFORD_BUNNY_MODEL_NAME, models);
+		loadModel(STANFORD_DRAGON_MODEL_NAME, models);
+		loadModel(LUCY_STATUE_MODEL_NAME, models);
 
 		return models;
 	}
