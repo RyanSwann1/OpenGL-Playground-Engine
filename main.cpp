@@ -6,6 +6,8 @@
 #include "Model.h"
 #include "Camera.h"
 #include "TextureArray.h"
+#include "ModelManager.h"
+#include "Entity.h"
 #include <vector>
 #include <iostream>
 
@@ -18,8 +20,8 @@ int main()
 	settings.majorVersion = 3;
 	settings.minorVersion = 3;
 	settings.attributeFlags = sf::ContextSettings::Core;
-	glm::uvec2 windowSize(1280, 720);
-	sf::Window window(sf::VideoMode(windowSize.x, windowSize.y), "OpenGL Playground", sf::Style::Default, settings);
+	glm::uvec2 windowSize(1920, 1080);
+	sf::Window window(sf::VideoMode(windowSize.x, windowSize.y), "OpenGL Playground", sf::Style::Fullscreen, settings);
 	window.setFramerateLimit(60);
 	window.setMouseCursorVisible(false);
 
@@ -36,17 +38,24 @@ int main()
 		return -1;
 	}
 
-	std::unique_ptr<Model> sponzaModel = Model::create("sponza.obj");
-	assert(sponzaModel);
-	if (!sponzaModel)
+	if (!ModelManager::getInstance().isAllModelsLoaded())
 	{
-		std::cout << "Failed to load sponza model\n";
+		std::cout << "Failed to load all models\n";
 		return -1;
 	}
 
+	std::vector<Entity> entities;
+	
+	entities.emplace_back(ModelManager::getInstance().getModel(SPONZA_MODEL_NAME), glm::vec3(0.0f, 0.0f, 0.0f));
+	entities.emplace_back(ModelManager::getInstance().getModel(STANFORD_BUNNY_MODEL_NAME), 
+		glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2500.0f, 2500.0f, 2500.0f), glm::vec3(0.0f, 90.0f, 0.0));
+	entities.emplace_back(ModelManager::getInstance().getModel(STANFORD_DRAGON_MODEL_NAME),
+		glm::vec3(600.0f, 0.0f, 0.0f), glm::vec3(25.0f, 25.0f, 25.0f), glm::vec3(0.0f, 90.0f, 0.0f));
+	entities.emplace_back(ModelManager::getInstance().getModel(LUCY_STATUE_MODEL_NAME),
+		glm::vec3(-600.0f, 0.0f, 0.0f), glm::vec3(2.5f, 2.5f, 2.5f), glm::vec3(0.0f, -90.0f, 0.0f));
+
 	sf::Clock clock;
 	Camera camera;
-	glm::vec3 sponzaPosition = { 0.0f, 0.0f, 0.0f };
 	
 	shaderHandler->switchToShader(eShaderType::Default);
 	std::cout << glGetError() << "\n";
@@ -82,11 +91,10 @@ int main()
 		shaderHandler->setUniformMat4f(eShaderType::Default, "uProjection", projection);
 		shaderHandler->setUniformMat4f(eShaderType::Default, "uView", view);
 		
-		if (sponzaModel)
+		for (const auto& entity : entities)
 		{
-			sponzaModel->render(*shaderHandler, sponzaPosition);
+			entity.render(*shaderHandler);
 		}
-
 
 		window.display();
 	}
