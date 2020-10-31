@@ -8,7 +8,7 @@
 
 namespace
 {
-	const std::string SHADER_DIRECTORY = "../Shared/Shaders/";
+	const std::string SHADER_DIRECTORY = "Shaders/";
 	constexpr int INVALID_UNIFORM_LOCATION = -1;
 
 	bool parseShaderFromFile(const std::string& filePath, std::string& shaderSource)
@@ -113,12 +113,6 @@ std::unique_ptr<ShaderHandler> ShaderHandler::create()
 		case eShaderType::Default:
 			shaderLoaded = createShaderProgram(shader.getID(), "VertexShader.glsl", "FragmentShader.glsl");
 			break;
-		case eShaderType::SelectionBox:
-			shaderLoaded = createShaderProgram(shader.getID(), "SelectionBoxVertexShader.glsl", "SelectionBoxFragmentShader.glsl");
-			break;
-		case eShaderType::Debug:
-			shaderLoaded = createShaderProgram(shader.getID(), "DebugVertexShader.glsl", "DebugFragmentShader.glsl");
-			break;
 		default:
 			assert(false);
 		}
@@ -177,10 +171,7 @@ ShaderHandler::Shader::Shader(eShaderType shaderType)
 	: m_itemID(glCreateProgram()),
 	m_type(shaderType),
 	m_uniformLocations()
-{
-	//std::cout << m_itemID << "\n";
-	//std::cout << "HIHI\n";
-}
+{}
 
 ShaderHandler::Shader::~Shader()
 {
