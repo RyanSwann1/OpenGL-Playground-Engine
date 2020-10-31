@@ -3,9 +3,9 @@
 #include "glad.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "ShaderHandler.h"
-#include "MeshGenerator.h"
-#include "Mesh.h"
+#include "Model.h"
 #include "Camera.h"
+#include "TextureArray.h"
 #include <vector>
 #include <iostream>
 
@@ -36,13 +36,19 @@ int main()
 		return -1;
 	}
 
+	std::unique_ptr<Model> sponzaModel = Model::create("sponza.obj");
+	assert(sponzaModel);
+	if (!sponzaModel)
+	{
+		std::cout << "Failed to load sponza model\n";
+		return -1;
+	}
+
 	sf::Clock clock;
 	Camera camera;
-
-	clock.restart();
-
+	glm::vec3 sponzaPosition = { 0.0f, 0.0f, 0.0f };
+	
 	shaderHandler->switchToShader(eShaderType::Default);
-
 	std::cout << glGetError() << "\n";
 	std::cout << glGetError() << "\n";
 	std::cout << glGetError() << "\n";
@@ -71,10 +77,16 @@ int main()
 		glm::mat4 projection = glm::perspective(glm::radians(camera.FOV),
 			static_cast<float>(windowSize.x) / static_cast<float>(windowSize.y), camera.nearPlaneDistance, camera.farPlaneDistance);
 
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		shaderHandler->switchToShader(eShaderType::Default);
 		shaderHandler->setUniformMat4f(eShaderType::Default, "uProjection", projection);
 		shaderHandler->setUniformMat4f(eShaderType::Default, "uView", view);
+		
+		if (sponzaModel)
+		{
+			sponzaModel->render(*shaderHandler, sponzaPosition);
+		}
 
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		window.display();
 	}

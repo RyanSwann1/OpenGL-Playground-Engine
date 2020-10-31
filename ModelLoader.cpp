@@ -9,20 +9,35 @@
 
 namespace
 {
-    const std::string MODELS_DIRECTORY = "/models/";
+    struct LoadedTexture
+    {
+        LoadedTexture(const MeshTextureDetails& meshTextureDetails)
+            : ID(meshTextureDetails.ID),
+            type(meshTextureDetails.type),
+            path(meshTextureDetails.path)
+        {}
+
+        int ID;
+        std::string type;
+        std::string path;
+    };
+
+    const std::string MODELS_DIRECTORY = "models/";
 }
 
-void processNode(aiNode* node, const aiScene* scene, std::vector<Mesh>& meshes, std::vector<MeshTextureDetails>& loadedTextures, const std::string& directory);
-Mesh processMesh(aiMesh* mesh, const aiScene* scene, std::vector<MeshTextureDetails>& loadedTextures, const std::string& directory);
+void processNode(aiNode* node, const aiScene* scene, std::vector<Mesh>& meshes, std::vector<LoadedTexture>& loadedTextures, 
+const std::string& directory);
+Mesh processMesh(aiMesh* mesh, const aiScene* scene, std::vector<LoadedTexture>& loadedTextures, const std::string& directory);
 unsigned int TextureFromFile(const char* path, const std::string& directory);
-void loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& typeName, std::vector<MeshTextureDetails>& loadedTextures, 
-    const std::string& directory, std::vector<MeshTextureDetails>& meshTextureDetails);
+void loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& typeName, std::vector<LoadedTexture>& loadedTextures,
+    const std::string& directory, std::vector<MeshTextureDetails>& textures);
 Material loadMaterial(aiMaterial* mat);
 
 bool ModelLoader::loadModel(const std::string& fileName, std::vector<Mesh>& meshes)
 {
     Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile(MODELS_DIRECTORY + fileName, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+    const aiScene* scene = importer.ReadFile(MODELS_DIRECTORY + fileName, 
+        aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace);
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
         std::cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << "\n";
@@ -30,17 +45,16 @@ bool ModelLoader::loadModel(const std::string& fileName, std::vector<Mesh>& mesh
     }
 
     std::string directory = (MODELS_DIRECTORY + fileName).substr(0, (MODELS_DIRECTORY + fileName).find_last_of('/'));
-    std::vector<MeshTextureDetails> loadedTextures;
+    std::vector<LoadedTexture> loadedTextures;
     processNode(scene->mRootNode, scene, meshes, loadedTextures, directory);
 
     return true;
 }
 
-void processNode(aiNode* node, const aiScene* scene, std::vector<Mesh>& meshes, std::vector<MeshTextureDetails>& loadedTextures, const std::string& directory)
+void processNode(aiNode* node, const aiScene* scene, std::vector<Mesh>& meshes, std::vector<LoadedTexture>& loadedTextures, const std::string& directory)
 {
     for (unsigned int i = 0; i < node->mNumMeshes; i++)
     {
-
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
         meshes.emplace_back(processMesh(mesh, scene, loadedTextures, directory));
     }
@@ -51,11 +65,10 @@ void processNode(aiNode* node, const aiScene* scene, std::vector<Mesh>& meshes, 
     }
 }
 
-Mesh processMesh(aiMesh* mesh, const aiScene* scene, std::vector<MeshTextureDetails>& loadedTextures, const std::string& directory)
+Mesh processMesh(aiMesh* mesh, const aiScene* scene, std::vector<LoadedTexture>& loadedTextures, const std::string& directory)
 {
     std::vector<Vertex> vertices;
     vertices.reserve(static_cast<size_t>(mesh->mNumVertices));
-    for (unsigned int i = 0; i < mesh->mNumVertices; i++)
     for (unsigned int i = 0; i < mesh->mNumVertices; i++)
     {
         glm::vec3 position = { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
@@ -73,43 +86,45 @@ Mesh processMesh(aiMesh* mesh, const aiScene* scene, std::vector<MeshTextureDeta
     std::vector<unsigned int> indices;
     for (unsigned int i = 0; i < mesh->mNumFaces; i++)
     {
-
         aiFace face = mesh->mFaces[i];
         for (unsigned int j = 0; j < face.mNumIndices; j++)
         {
             indices.push_back(face.mIndices[j]);
         }
     }
-
+    
     aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
     std::vector<MeshTextureDetails> textures;
     loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse", loadedTextures, directory, textures);
+    loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular", loadedTextures, directory, textures);
+    loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal", loadedTextures, directory, textures);
+    loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height", loadedTextures, directory, textures);
 
     return Mesh(std::move(vertices), std::move(indices), std::move(textures), loadMaterial(material));
 }
 
-void loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& typeName, std::vector<MeshTextureDetails>& loadedTextures, 
-    const std::string& directory, std::vector<MeshTextureDetails>& meshTextureDetails)
+void loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& typeName, std::vector<LoadedTexture>& loadedTextures,
+    const std::string& directory, std::vector<MeshTextureDetails>& textures)
 {
     for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
     {
         aiString str;
         mat->GetTexture(type, i, &str);
         bool skip = false;
-        for (unsigned int j = 0; j < loadedTextures.size(); j++)
+        for (const auto& loadedTexture : loadedTextures)
         {
-            if (std::strcmp(loadedTextures[j].path.data(), str.C_Str()) == 0)
+            if (std::strcmp(loadedTexture.path.data(), str.C_Str()) == 0)
             {
-                meshTextureDetails.push_back(loadedTextures[j]);
-                skip = true; 
+                textures.emplace_back(loadedTexture.ID, loadedTexture.type, loadedTexture.path);
+                skip = true;
                 break;
             }
         }
+
         if (!skip)
         { 
-            unsigned int ID = TextureFromFile(str.C_Str(), directory);
-            meshTextureDetails.emplace_back(ID, typeName, str.C_Str());
-            loadedTextures.emplace_back(ID, typeName, str.C_Str());
+            textures.emplace_back(TextureFromFile(str.C_Str(), directory), typeName, str.C_Str());
+            loadedTextures.emplace_back(textures.back());
         }
     }
 }
@@ -117,10 +132,20 @@ void loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string
 Material loadMaterial(aiMaterial* mat) 
 {
     Material material;
-    aiColor3D color(0.f, 0.f, 0.f);
-
+    aiColor3D color(0.0f, 0.0f, 0.0f);
+    float shininess;
+        
     mat->Get(AI_MATKEY_COLOR_DIFFUSE, color);
-    material.Diffuse = glm::vec3(color.r, color.g, color.b);
+    material.diffuse = glm::vec3(color.r, color.g, color.b);
+
+    mat->Get(AI_MATKEY_COLOR_AMBIENT, color);
+    material.ambient = glm::vec3(color.r, color.g, color.b);
+
+    mat->Get(AI_MATKEY_COLOR_SPECULAR, color);
+    material.specular = glm::vec3(color.r, color.g, color.b);
+
+    mat->Get(AI_MATKEY_SHININESS, shininess);
+    material.shininess = shininess;
 
     return material;
 }
@@ -136,6 +161,7 @@ unsigned int TextureFromFile(const char* path, const std::string& directory)
 
     sf::Image image;
     bool textureLoaded = image.loadFromFile(filename);
+    assert(textureLoaded);
     if (!textureLoaded)
     {
         std::cout << "Failed to load texture: " << filename << "\n";

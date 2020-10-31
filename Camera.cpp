@@ -4,17 +4,13 @@
 
 namespace
 {
-	constexpr float MOVEMENT_SPEED = 15.0f;
-	constexpr float ZOOM_SPEED = 30.0f;
-
-	constexpr int MAX_RAY_TO_GROUND_DISTANCE = 2500;
-	constexpr float MINIMUM_HEIGHT = 5.0f;
+	constexpr float MOVEMENT_SPEED = 100.0f;
 	constexpr float SENSITIVITY = 4.0f;
 	constexpr float NEAR_PLANE_DISTANCE = 0.1f;
-	constexpr float FAR_PLANE_DISTANCE = 1750.0f;
+	constexpr float FAR_PLANE_DISTANCE = 5000.0f;
 	constexpr float FIELD_OF_VIEW = 50.0f;
-	constexpr glm::vec3 STARTING_POSITION = { 0.0f, 72.0f, 43.0f };
-	constexpr glm::vec3 STARTING_ROTATION = { -75.0f, 0.0f, 0.0f };
+	constexpr float MIN_VELOCITY = 0.2f;
+	constexpr float VELOCITY_DROPOFF = 0.9f;
 }
 
 Camera::Camera()
@@ -25,8 +21,8 @@ Camera::Camera()
 	front(),
 	up({ 0.0f, 1.0f, 0.0f }),
 	right(),
-	rotation(STARTING_ROTATION),
-	position(STARTING_POSITION),
+	rotation(),
+	position(),
 	velocity()
 {
 	setFront();
@@ -88,19 +84,19 @@ void Camera::update(float deltaTime, const sf::Window& window)
 
 	position += velocity * deltaTime;
 
-	velocity *= 0.9f;
+	velocity *= VELOCITY_DROPOFF;
 	setFront();
 	right = glm::normalize(glm::cross(front, { 0.0f, 1.0f, 0.0f }));
 	up = glm::normalize(glm::cross(right, front));
-	if (glm::abs(velocity.x) <= 0.2f)
+	if (glm::abs(velocity.x) <= MIN_VELOCITY)
 	{
 		velocity.x = 0.0f;
 	}
-	if (glm::abs(velocity.y) <= 0.2f)
+	if (glm::abs(velocity.y) <= MIN_VELOCITY)
 	{
 		velocity.y = 0.0f;
 	}
-	if (glm::abs(velocity.z) <= 0.2f)
+	if (glm::abs(velocity.z) <= MIN_VELOCITY)
 	{
 		velocity.z = 0.0f;
 	}
