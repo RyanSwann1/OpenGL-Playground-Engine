@@ -15,10 +15,11 @@ struct Model : private NonMovable, private NonCopyable
 	void render(ShaderHandler& shaderHandler, const glm::vec3& position, glm::vec3 rotation = glm::vec3(), 
 		glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f)) const;
 
+	const std::string name;
 	const std::vector<Mesh> meshes;
 	
 private:
-	Model(std::vector<Mesh>&& meshes);
+	Model(std::vector<Mesh>&& meshes, const std::string& name);
 
 	void attachMeshesToVAO() const;
 };

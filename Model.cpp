@@ -5,8 +5,9 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/transform.hpp"
 
-Model::Model(std::vector<Mesh>&& meshes)
-	: meshes(std::move(meshes))
+Model::Model(std::vector<Mesh>&& meshes, const std::string& name)
+	: name(name),
+	meshes(std::move(meshes))
 {
 	attachMeshesToVAO();
 }
@@ -27,7 +28,7 @@ std::unique_ptr<Model> Model::create(const std::string & fileName)
 		return std::unique_ptr<Model>();
 	}
 
-	return std::unique_ptr<Model>(new Model(std::move(meshes)));
+	return std::unique_ptr<Model>(new Model(std::move(meshes), fileName));
 }
 
 void Model::render(ShaderHandler& shaderHandler, const glm::vec3& position, glm::vec3 rotation, glm::vec3 scale) const
