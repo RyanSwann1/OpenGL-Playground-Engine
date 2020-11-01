@@ -9,8 +9,8 @@ struct Model;
 class Entity
 {
 public:
-	Entity(const Model& model, const glm::vec3& startingPosition, glm::vec3 startingScale = glm::vec3(1.0f, 1.0f, 1.0f), 
-		glm::vec3 startingRotation = glm::vec3(0.0f, 0.0f, 0.0f));
+	Entity(const Model& model, glm::vec3 startingPosition = glm::vec3(), glm::vec3 startingScale = glm::vec3(1.0f, 1.0f, 1.0f), 
+		glm::vec3 startingRotation = glm::vec3());
 
 	void render(ShaderHandler& shaderHandler) const;
 

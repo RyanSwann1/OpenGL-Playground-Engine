@@ -11,6 +11,24 @@
 #include <vector>
 #include <iostream>
 
+std::vector<Entity> loadEntities()
+{
+	std::vector<Entity> entities;
+
+	entities.emplace_back(ModelManager::getInstance().getModel(SPONZA_MODEL_NAME));
+
+	entities.emplace_back(ModelManager::getInstance().getModel(STANFORD_BUNNY_MODEL_NAME),
+		glm::vec3(), glm::vec3(2500.0f, 2500.0f, 2500.0f), glm::vec3(0.0f, 90.0f, 0.0f));
+	
+	entities.emplace_back(ModelManager::getInstance().getModel(STANFORD_DRAGON_MODEL_NAME),
+		glm::vec3(600.0f, 0.0f, 0.0f), glm::vec3(25.0f, 25.0f, 25.0f), glm::vec3(0.0f, 90.0f, 0.0f));
+	
+	entities.emplace_back(ModelManager::getInstance().getModel(LUCY_STATUE_MODEL_NAME),
+		glm::vec3(-600.0f, 0.0f, 0.0f), glm::vec3(2.5f, 2.5f, 2.5f), glm::vec3(0.0f, -90.0f, 0.0f));
+
+	return entities;
+}
+
 int main()
 {
 	sf::ContextSettings settings;
@@ -20,8 +38,8 @@ int main()
 	settings.majorVersion = 3;
 	settings.minorVersion = 3;
 	settings.attributeFlags = sf::ContextSettings::Core;
-	glm::uvec2 windowSize(1920, 1080);
-	sf::Window window(sf::VideoMode(windowSize.x, windowSize.y), "OpenGL Playground", sf::Style::Fullscreen, settings);
+	glm::uvec2 windowSize(1280, 800);
+	sf::Window window(sf::VideoMode(windowSize.x, windowSize.y), "OpenGL Playground", sf::Style::Default, settings);
 	window.setFramerateLimit(60);
 	window.setMouseCursorVisible(false);
 
@@ -44,19 +62,10 @@ int main()
 		return -1;
 	}
 
-	std::vector<Entity> entities;
-	
-	entities.emplace_back(ModelManager::getInstance().getModel(SPONZA_MODEL_NAME), glm::vec3(0.0f, 0.0f, 0.0f));
-	entities.emplace_back(ModelManager::getInstance().getModel(STANFORD_BUNNY_MODEL_NAME), 
-		glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2500.0f, 2500.0f, 2500.0f), glm::vec3(0.0f, 90.0f, 0.0));
-	entities.emplace_back(ModelManager::getInstance().getModel(STANFORD_DRAGON_MODEL_NAME),
-		glm::vec3(600.0f, 0.0f, 0.0f), glm::vec3(25.0f, 25.0f, 25.0f), glm::vec3(0.0f, 90.0f, 0.0f));
-	entities.emplace_back(ModelManager::getInstance().getModel(LUCY_STATUE_MODEL_NAME),
-		glm::vec3(-600.0f, 0.0f, 0.0f), glm::vec3(2.5f, 2.5f, 2.5f), glm::vec3(0.0f, -90.0f, 0.0f));
-
+	const std::vector<Entity> entities = loadEntities();
 	sf::Clock clock;
 	Camera camera;
-	
+
 	shaderHandler->switchToShader(eShaderType::Default);
 	std::cout << glGetError() << "\n";
 	std::cout << glGetError() << "\n";

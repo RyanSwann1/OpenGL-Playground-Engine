@@ -1,7 +1,7 @@
 #include "Entity.h"
 #include "ModelManager.h"
 
-Entity::Entity(const Model& model, const glm::vec3& startingPosition, glm::vec3 startingScale, glm::vec3 startingRotation)
+Entity::Entity(const Model& model, glm::vec3 startingPosition, glm::vec3 startingScale, glm::vec3 startingRotation)
 	: m_model(model),
 	m_position(startingPosition),
 	m_scale(startingScale),

@@ -52,28 +52,23 @@ namespace
 }
 
 ModelManager::ModelManager()
-	: m_models(loadModels())
+	: models(loadModels())
 {}
-
-const std::array<std::unique_ptr<Model>, MAX_MODELS>& ModelManager::getAllModels() const
-{
-	return m_models;
-}
 
 const Model& ModelManager::getModel(const std::string& modelName) const
 {
-	auto model = std::find_if(m_models.cbegin(), m_models.cend(), [&modelName](const auto& model)
+	auto model = std::find_if(models.cbegin(), models.cend(), [&modelName](const auto& model)
 	{
 		return model->name == modelName;
 	});
-	assert(model != m_models.cend());
+	assert(model != models.cend());
 
 	return *(*model);
 }
 
 bool ModelManager::isAllModelsLoaded() const
 {
-	for (const auto& model : m_models)
+	for (const auto& model : models)
 	{
 		if (!model)
 		{

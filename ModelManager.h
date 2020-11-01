@@ -10,21 +10,19 @@ extern const std::string STANFORD_DRAGON_MODEL_NAME;
 extern const std::string LUCY_STATUE_MODEL_NAME;
 inline const size_t MAX_MODELS = 4;
 
-class ModelManager : private NonCopyable, private NonMovable
+struct ModelManager : private NonCopyable, private NonMovable
 {
-public:
 	static ModelManager& getInstance() 
 	{
 		static ModelManager instance;
 		return instance;
 	}
 
-	const std::array<std::unique_ptr<Model>, MAX_MODELS>& getAllModels() const;
 	const Model& getModel(const std::string& modelName) const;
 	bool isAllModelsLoaded() const;
 
+	const std::array<std::unique_ptr<Model>, MAX_MODELS> models;
+
 private:
 	ModelManager();
-
-	const std::array<std::unique_ptr<Model>, MAX_MODELS> m_models;
 };

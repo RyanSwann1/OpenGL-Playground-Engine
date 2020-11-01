@@ -186,7 +186,7 @@ MeshTextureDetails::~MeshTextureDetails()
 	}
 }
 
-//Materu
+//Material
 Material::Material()
 	: diffuse(),
 	specular(),

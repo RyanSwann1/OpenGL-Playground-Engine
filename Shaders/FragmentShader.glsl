@@ -2,8 +2,8 @@
 
 out vec4 color;
 
-in vec2 vTextCoords;
 in vec3 vNormal;
+in vec2 vTextCoords;
 
 uniform sampler2D texture_diffuse;
 uniform sampler2D texture_specular;
