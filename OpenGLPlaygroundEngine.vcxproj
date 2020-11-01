@@ -156,7 +156,6 @@
     <ClCompile Include="ModelLoader.cpp" />
     <ClCompile Include="ModelManager.cpp" />
     <ClCompile Include="ShaderHandler.cpp" />
-    <ClCompile Include="TextureArray.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -171,7 +170,6 @@
     <ClInclude Include="NonCopyable.h" />
     <ClInclude Include="NonMovable.h" />
     <ClInclude Include="ShaderHandler.h" />
-    <ClInclude Include="TextureArray.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="OpenGLShaders\FragmentShader.glsl" />

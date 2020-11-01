@@ -5,7 +5,6 @@
 #include "ShaderHandler.h"
 #include "Model.h"
 #include "Camera.h"
-#include "TextureArray.h"
 #include "ModelManager.h"
 #include "GameObject.h"
 #include <vector>
