@@ -6,10 +6,10 @@
 
 class ShaderHandler;
 struct Model;
-class Entity
+class GameObject
 {
 public:
-	Entity(const Model& model, glm::vec3 startingPosition = glm::vec3(), glm::vec3 startingScale = glm::vec3(1.0f, 1.0f, 1.0f), 
+	GameObject(const Model& model, glm::vec3 startingPosition = glm::vec3(), glm::vec3 startingScale = glm::vec3(1.0f, 1.0f, 1.0f), 
 		glm::vec3 startingRotation = glm::vec3());
 
 	void render(ShaderHandler& shaderHandler) const;

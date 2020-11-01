@@ -7,26 +7,26 @@
 #include "Camera.h"
 #include "TextureArray.h"
 #include "ModelManager.h"
-#include "Entity.h"
+#include "GameObject.h"
 #include <vector>
 #include <iostream>
 
-std::vector<Entity> loadEntities()
+std::vector<GameObject> loadGameObjects()
 {
-	std::vector<Entity> entities;
+	std::vector<GameObject> gameObjects;
 
-	entities.emplace_back(ModelManager::getInstance().getModel(SPONZA_MODEL_NAME));
+	gameObjects.emplace_back(ModelManager::getInstance().getModel(SPONZA_MODEL_NAME));
 
-	entities.emplace_back(ModelManager::getInstance().getModel(STANFORD_BUNNY_MODEL_NAME),
+	gameObjects.emplace_back(ModelManager::getInstance().getModel(STANFORD_BUNNY_MODEL_NAME),
 		glm::vec3(), glm::vec3(2500.0f, 2500.0f, 2500.0f), glm::vec3(0.0f, 90.0f, 0.0f));
 	
-	entities.emplace_back(ModelManager::getInstance().getModel(STANFORD_DRAGON_MODEL_NAME),
+	gameObjects.emplace_back(ModelManager::getInstance().getModel(STANFORD_DRAGON_MODEL_NAME),
 		glm::vec3(600.0f, 0.0f, 0.0f), glm::vec3(25.0f, 25.0f, 25.0f), glm::vec3(0.0f, 90.0f, 0.0f));
 	
-	entities.emplace_back(ModelManager::getInstance().getModel(LUCY_STATUE_MODEL_NAME),
+	gameObjects.emplace_back(ModelManager::getInstance().getModel(LUCY_STATUE_MODEL_NAME),
 		glm::vec3(-600.0f, 0.0f, 0.0f), glm::vec3(2.5f, 2.5f, 2.5f), glm::vec3(0.0f, -90.0f, 0.0f));
 
-	return entities;
+	return gameObjects;
 }
 
 int main()
@@ -62,7 +62,7 @@ int main()
 		return -1;
 	}
 
-	const std::vector<Entity> entities = loadEntities();
+	const std::vector<GameObject> gameObjects = loadGameObjects();
 	sf::Clock clock;
 	Camera camera;
 
@@ -100,9 +100,9 @@ int main()
 		shaderHandler->setUniformMat4f(eShaderType::Default, "uProjection", projection);
 		shaderHandler->setUniformMat4f(eShaderType::Default, "uView", view);
 		
-		for (const auto& entity : entities)
+		for (const auto& gameObject : gameObjects)
 		{
-			entity.render(*shaderHandler);
+			gameObject.render(*shaderHandler);
 		}
 
 		window.display();
