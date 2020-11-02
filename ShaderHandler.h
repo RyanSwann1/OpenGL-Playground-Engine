@@ -12,7 +12,8 @@
 enum class eShaderType
 {
 	Default = 0,
-	Max = Default
+	Debug,
+	Max = Debug
 };
 
 class ShaderHandler final : private NonCopyable, private NonMovable
@@ -50,6 +51,7 @@ private:
 
 	std::array<Shader, static_cast<int>(eShaderType::Max) + 1> m_shaders =
 	{
-		eShaderType::Default
+		eShaderType::Default,
+		eShaderType::Debug
 	};
 };

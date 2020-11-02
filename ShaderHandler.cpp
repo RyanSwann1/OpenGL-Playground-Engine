@@ -112,6 +112,9 @@ std::unique_ptr<ShaderHandler> ShaderHandler::create()
 		case eShaderType::Default:
 			shaderLoaded = createShaderProgram(shader.getID(), "VertexShader.glsl", "FragmentShader.glsl");
 			break;
+		case eShaderType::Debug:
+			shaderLoaded = createShaderProgram(shader.getID(), "DebugVertexShader.glsl", "DebugFragmentShader.glsl");
+			break;
 		default:
 			assert(false);
 		}
