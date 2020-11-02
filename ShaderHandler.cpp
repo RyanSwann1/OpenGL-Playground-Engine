@@ -112,9 +112,11 @@ std::unique_ptr<ShaderHandler> ShaderHandler::create()
 		case eShaderType::Default:
 			shaderLoaded = createShaderProgram(shader.getID(), "VertexShader.glsl", "FragmentShader.glsl");
 			break;
+#ifdef DEBUG
 		case eShaderType::Debug:
 			shaderLoaded = createShaderProgram(shader.getID(), "DebugVertexShader.glsl", "DebugFragmentShader.glsl");
 			break;
+#endif // DEBUG
 		default:
 			assert(false);
 		}
@@ -133,37 +135,68 @@ void ShaderHandler::setUniformMat4f(eShaderType shaderType, const std::string& u
 {
 	assert(shaderType == m_currentShaderType);
 	int uniformLocation = m_shaders[static_cast<int>(shaderType)].getUniformLocation(uniformName);
-	assert(uniformLocation != INVALID_UNIFORM_LOCATION);
-	glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(matrix));
+	if (uniformLocation != INVALID_UNIFORM_LOCATION)
+	{
+		glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(matrix));
+	} 
+#ifndef DEBUG
+	else
+	{
+		assert(uniformLocation != INVALID_UNIFORM_LOCATION);
+	}
+#endif // !DEBUG
 }
 
 void ShaderHandler::setUniformVec3(eShaderType shaderType, const std::string& uniformName, const glm::vec3& v)
 {
 	assert(shaderType == m_currentShaderType);
 	int uniformLocation = m_shaders[static_cast<int>(shaderType)].getUniformLocation(uniformName);
-	assert(uniformLocation != INVALID_UNIFORM_LOCATION);
-	glUniform3fv(uniformLocation, 1, &v[0]);
+	if (uniformLocation != INVALID_UNIFORM_LOCATION)
+	{
+		glUniform3fv(uniformLocation, 1, &v[0]);
+	}
+#ifndef DEBUG
+	else
+	{
+		assert(uniformLocation != INVALID_UNIFORM_LOCATION);
+	}
+#endif // !DEBUG
 }
 
 void ShaderHandler::setUniform1i(eShaderType shaderType, const std::string& uniformName, int value)
 {
 	assert(shaderType == m_currentShaderType);
 	int uniformLocation = m_shaders[static_cast<int>(shaderType)].getUniformLocation(uniformName);
-	assert(uniformLocation != INVALID_UNIFORM_LOCATION);
-	glUniform1i(uniformLocation, value);
+	if (uniformLocation != INVALID_UNIFORM_LOCATION)
+	{
+		glUniform1i(uniformLocation, value);
+	}
+#ifndef DEBUG
+	else
+	{
+		assert(uniformLocation != INVALID_UNIFORM_LOCATION);
+	}
+#endif // !DEBUG
 }
 
 void ShaderHandler::setUniform1f(eShaderType shaderType, const std::string& uniformName, float value)
 {
 	assert(shaderType == m_currentShaderType);
 	int uniformLocation = m_shaders[static_cast<int>(shaderType)].getUniformLocation(uniformName);
-	assert(uniformLocation != INVALID_UNIFORM_LOCATION);
-	glUniform1f(uniformLocation, value);
+	if (uniformLocation != INVALID_UNIFORM_LOCATION)
+	{
+		glUniform1f(uniformLocation, value);
+	}
+#ifndef DEBUG
+	else
+	{
+		assert(uniformLocation != INVALID_UNIFORM_LOCATION);
+	}
+#endif // !DEBUG
 }
 
 void ShaderHandler::switchToShader(eShaderType shaderType)
 {
-	//assert(shaderType != m_currentShaderType);
 	m_currentShaderType = shaderType;
 	glUseProgram(m_shaders[static_cast<int>(shaderType)].getID());
 }
@@ -200,11 +233,7 @@ int ShaderHandler::Shader::getUniformLocation(const std::string& uniformName)
 	else
 	{
 		int location = glGetUniformLocation(m_itemID, uniformName.c_str());
-		if (location == -1)
-		{
-			std::cout << "Failed to find uniform: " << uniformName << "\n";
-		}
-		else
+		if (location >= 0)
 		{
 			m_uniformLocations[uniformName] = location;
 		}
