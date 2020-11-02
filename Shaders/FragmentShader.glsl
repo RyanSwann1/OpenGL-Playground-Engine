@@ -15,7 +15,7 @@ uniform bool uSpecularTexture;
 uniform vec3 uMaterialColor;
 uniform vec3 uLightColor;
 
-const float ambientStrength = 0.7;
+const float ambientStrength = 0.1;
 const float specularStrength = 0.5;
 const float constantAttentuationParamater = 1.0;
 const float linearAttenuationParamter = 0.0014;
@@ -31,7 +31,7 @@ void main()
 
 	//Specular Lighting
 	vec3 specular = 
-		uLightColor * specularStrength * (pow(max(dot(normalize(-vFragPosition), normalize(reflect(-lightDirection, n))), 0.0), 32));
+		uLightColor * specularStrength * (pow(max(dot(normalize(-vFragPosition), normalize(reflect(-lightDirection, n))), 0.0), 64));
 
 	if(uDiffuseTexture)
 	{
@@ -45,15 +45,12 @@ void main()
 
 	if(!uDiffuseTexture && !uSpecularTexture)
 	{
-		float dotFactor = dot(vNormal, vec3(0.0, 1.0, 0.0)) * 0.5 + 0.5;
-		float darkenFactor = 0.5 + dotFactor * (1.0 - 0.5);
-		vec3 outputColour = uMaterialColor * darkenFactor;
-		color = vec4(outputColour * ambientStrength, 1.0);
+		color = vec4(vec3(0.7), 1.0);
 	}
 
 	float distance    = length(vLightPosition - vFragPosition);
 	float attenuation = 1.0 / (constantAttentuationParamater + linearAttenuationParamter * distance + 
 		quadraticAttenuationParameter * (distance * distance));
 
-	color = vec4(vec3((ambientStrength + diffuse + specular) * color.xyz) * attenuation, 1.0 * color.w);	
+	color = vec4(vec3((diffuse + specular) * color.rgb) * attenuation + vec3(ambientStrength) * color.rgb, 1.0 * color.w);	
 };
