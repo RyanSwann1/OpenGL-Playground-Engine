@@ -2,6 +2,7 @@
 #include "ShaderHandler.h"
 #include "ModelLoader.h"
 #include "Globals.h"
+#include "Transform.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/transform.hpp"
 
@@ -31,12 +32,12 @@ std::unique_ptr<Model> Model::create(const std::string & fileName)
 	return std::unique_ptr<Model>(new Model(std::move(meshes), fileName));
 }
 
-void Model::render(ShaderHandler& shaderHandler, const glm::vec3& position, glm::vec3 rotation, glm::vec3 scale) const
+void Model::render(ShaderHandler& shaderHandler, const Transform& transform) const
 {	
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, position);
-	model = glm::scale(model, scale);
-	model = glm::rotate(model, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::translate(model, transform.position);
+	model = glm::scale(model, transform.scale);
+	model = glm::rotate(model, glm::radians(transform.rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
 	
 	shaderHandler.setUniformMat4f(eShaderType::Default, "uModel", model);
 

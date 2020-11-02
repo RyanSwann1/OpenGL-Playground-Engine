@@ -189,6 +189,7 @@
     <ClInclude Include="NonCopyable.h" />
     <ClInclude Include="NonMovable.h" />
     <ClInclude Include="ShaderHandler.h" />
+    <ClInclude Include="Transform.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="OpenGLShaders\FragmentShader.glsl" />
