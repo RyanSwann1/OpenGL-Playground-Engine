@@ -152,6 +152,14 @@ Vertex::Vertex(const glm::vec3& position, const glm::vec3& normal, const glm::ve
 	textCoords(textCoords)
 {}
 
+#ifdef DEBUG_LIGHTING
+Vertex::Vertex(const glm::vec3& position)
+	: position(position),
+	normal(),
+	textCoords()
+{}
+#endif // DEBUG_LIGHTING
+
 //MeshTextureDetails
 MeshTextureDetails::MeshTextureDetails(unsigned int ID, const std::string& type, const std::string& path)
 	: ID(ID),

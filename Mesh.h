@@ -33,6 +33,9 @@ struct MeshTextureDetails : private NonCopyable
 struct Vertex
 {
 	Vertex(const glm::vec3& position, const glm::vec3& normal, const glm::vec2& textCoords);
+#ifdef DEBUG_LIGHTING
+	Vertex(const glm::vec3& position);
+#endif // DEBUG_LIGHTING
 
 	glm::vec3 position;
 	glm::vec3 normal;
