@@ -17,6 +17,9 @@ uniform vec3 uLightColor;
 
 const float ambientStrength = 0.7;
 const float specularStrength = 0.5;
+const float constantAttentuationParamater = 1.0;
+const float linearAttenuationParamter = 0.0014;
+const float quadraticAttenuationParameter = 0.000007;
 
 void main()
 {
@@ -48,5 +51,9 @@ void main()
 		color = vec4(outputColour * ambientStrength, 1.0);
 	}
 
-	color = vec4(vec3((ambientStrength + diffuse + specular) * color.xyz), 1.0 * color.w);	
+	float distance    = length(vLightPosition - vFragPosition);
+	float attenuation = 1.0 / (constantAttentuationParamater + linearAttenuationParamter * distance + 
+		quadraticAttenuationParameter * (distance * distance));
+
+	color = vec4(vec3((ambientStrength + diffuse + specular) * color.xyz) * attenuation, 1.0 * color.w);	
 };
