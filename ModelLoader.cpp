@@ -1,6 +1,8 @@
 #include "ModelLoader.h"
 #include "Model.h"
 #include "glad.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -37,7 +39,7 @@ bool ModelLoader::loadModel(const std::string& fileName, std::vector<Mesh>& mesh
 {
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(MODELS_DIRECTORY + fileName, 
-        aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace);
+        aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace);
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
         std::cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << "\n";
@@ -152,31 +154,39 @@ Material loadMaterial(aiMaterial* mat)
 
 unsigned int TextureFromFile(const char* path, const std::string& directory)
 {
-    std::string filename = std::string(path);
-    filename = directory + '/' + filename;
+    std::string fileName = std::string(path);
+    fileName = directory + '/' + fileName;
 
     unsigned int textureID;
     glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_2D, textureID);
 
-    sf::Image image;
-    bool textureLoaded = image.loadFromFile(filename);
-    assert(textureLoaded);
-    if (!textureLoaded)
+    int width, height, nrComponents;
+    unsigned char* data = stbi_load(fileName.c_str(), &width, &height, &nrComponents, 0);
+    if (data)
     {
-        std::cout << "Failed to load texture: " << filename << "\n";
-    }
-    else
-    {
-        image.flipVertically();
+        GLenum format;
+        if (nrComponents == 1)
+            format = GL_RED;
+        else if (nrComponents == 3)
+            format = GL_RGB;
+        else if (nrComponents == 4)
+            format = GL_RGBA;
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getSize().x, image.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr());
-        glGenerateMipmap(GL_TEXTURE_2D);
+        stbi_image_free(data);
+    }
+    else
+    {
+        std::cout << "Texture failed to load at path: " << fileName << std::endl;
+        stbi_image_free(data);
     }
 
     return textureID;
