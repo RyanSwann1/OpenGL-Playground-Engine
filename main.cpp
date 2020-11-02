@@ -19,16 +19,17 @@ std::vector<GameObject> loadGameObjects()
 {
 	std::vector<GameObject> gameObjects;
 
-	gameObjects.emplace_back(ModelManager::getInstance().getModel(SPONZA_MODEL_NAME));
+	gameObjects.emplace_back(ModelManager::getInstance().getModel(SPONZA_MODEL_NAME),
+		Transform(glm::vec3()));
 
 	gameObjects.emplace_back(ModelManager::getInstance().getModel(STANFORD_BUNNY_MODEL_NAME),
-		glm::vec3(), glm::vec3(2500.0f, 2500.0f, 2500.0f), glm::vec3(0.0f, 90.0f, 0.0f));
+		Transform({}, { 2500.0f, 2500.0f, 2500.0f }, { 0.0f, 90.0f, 0.0f }));
 	
 	gameObjects.emplace_back(ModelManager::getInstance().getModel(STANFORD_DRAGON_MODEL_NAME),
-		glm::vec3(600.0f, 0.0f, 0.0f), glm::vec3(25.0f, 25.0f, 25.0f), glm::vec3(0.0f, 90.0f, 0.0f));
+		Transform({ 600.0f, 0.0f, 0.0f }, { 25.0f, 25.0f, 25.0f }, { 0.0f, 90.0f, 0.0f }));
 	
 	gameObjects.emplace_back(ModelManager::getInstance().getModel(LUCY_STATUE_MODEL_NAME),
-		glm::vec3(-600.0f, 0.0f, 0.0f), glm::vec3(2.5f, 2.5f, 2.5f), glm::vec3(0.0f, -90.0f, 0.0f));
+		Transform({ -600.0f, 0.0f, 0.0f }, { 2.5f, 2.5f, 2.5f }, { 0.0f, -90.0f, 0.0f }));		
 
 	return gameObjects;
 }
@@ -89,6 +90,8 @@ int main()
 	settings.majorVersion = 3;
 	settings.minorVersion = 3;
 	settings.attributeFlags = sf::ContextSettings::Core;
+	//glm::uvec2 windowSize(1920, 1080);
+	//sf::Window window(sf::VideoMode(windowSize.x, windowSize.y), "OpenGL Playground", sf::Style::Fullscreen, settings);
 	glm::uvec2 windowSize(1280, 800);
 	sf::Window window(sf::VideoMode(windowSize.x, windowSize.y), "OpenGL Playground", sf::Style::Default, settings);
 	window.setFramerateLimit(60);
@@ -119,9 +122,8 @@ int main()
 	sf::Clock deltaClock;
 	sf::Clock gameClock;
 	Camera camera;
-	Light light({ 0.0f, 400.0f, 0.0f }, { 1.0f, 1.0f, 0.0f });
+	Light light({ 0.0f, 100.0f, 0.0f }, { 1.0f, 1.0f, 0.0f });
 
-	shaderHandler->switchToShader(eShaderType::Default);
 	std::cout << glGetError() << "\n";
 	std::cout << glGetError() << "\n";
 	std::cout << glGetError() << "\n";
@@ -146,14 +148,12 @@ int main()
 
 		camera.update(deltaTime, window);
 
-		//float timeElasped = gameClock.getElapsedTime().asSeconds();
-		//light.position.x = glm::sin(timeElasped);
-		//light.position.y = sin(timeElasped) * 50.0f;
-
+		float timeElasped = gameClock.getElapsedTime().asSeconds();
+		light.position.x = glm::sin(timeElasped * 2.0f) * 300.0f;
+		//light.position.y = sin(timeElasped * 2.0f) * 250.0f;
 
 		ImGui_SFML_OpenGL3::startFrame();
 		displayOverlayGUI(camera);
-		//ImGui::ShowDemoWindow();
 
 		glm::mat4 view = glm::lookAt(camera.position, camera.position + camera.front, camera.up);
 		glm::mat4 projection = glm::perspective(glm::radians(camera.FOV),
@@ -166,18 +166,19 @@ int main()
 		shaderHandler->setUniformMat4f(eShaderType::Default, "uView", view);
 		
 		shaderHandler->setUniformVec3(eShaderType::Default, "uLightPosition", light.position);
+		shaderHandler->setUniformVec3(eShaderType::Default, "uLightColor", light.color);
 		for (const auto& gameObject : gameObjects)
 		{
 			gameObject.render(*shaderHandler);
 		}
 
-#ifdef DEBUG_LIGHTING
+#ifdef DEBUG
 		shaderHandler->switchToShader(eShaderType::Debug);
 		shaderHandler->setUniformMat4f(eShaderType::Debug, "uProjection", projection);
 		shaderHandler->setUniformMat4f(eShaderType::Debug, "uView", view);
 		
 		light.render(*shaderHandler);
-#endif // DEBUG_LIGHTING
+#endif // DEBUG
 
 		ImGui_SFML_OpenGL3::endFrame();
 		window.display();

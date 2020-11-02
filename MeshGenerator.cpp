@@ -67,7 +67,7 @@ namespace
 
 void generateCubeFace(eCubeFace cubeFace, Mesh& mesh, unsigned int& elementBufferIndex, const glm::vec3& position);
 
-void MeshGenerator::generateCubeMesh(Mesh& mesh, const glm::vec3& position)
+void MeshGenerator::generateCubeMesh(Mesh& mesh, glm::vec3 position)
 {
 	unsigned int elementBufferIndex = 0;
 	generateCubeFace(eCubeFace::Left, mesh, elementBufferIndex, position);

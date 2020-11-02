@@ -1,24 +1,23 @@
 #include "Light.h"
-#ifdef DEBUG_LIGHTING
+#ifdef DEBUG
 #include "MeshGenerator.h"
 #include "glad.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/transform.hpp"
 #include "ShaderHandler.h"
-#endif // DEBUG_LIGHTING
+#endif // DEBUG
 
 Light::Light(const glm::vec3& startingPosition, const glm::vec3& startingColor)
 	: position(startingPosition),
 	color(startingColor)
-{}
+{
+	MeshGenerator::generateCubeMesh(mesh);
+}
 
-#ifdef DEBUG_LIGHTING
+#ifdef DEBUG
 void Light::render(ShaderHandler& shaderHandler) 
 {
-	mesh.vertices.clear();
-	mesh.indices.clear();
-
-	MeshGenerator::generateCubeMesh(mesh, position);
+	mesh.bind();
 
 	glm::mat4 model(1.0f);
 	model = glm::translate(model, position);
@@ -26,4 +25,4 @@ void Light::render(ShaderHandler& shaderHandler)
 
 	glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, nullptr);
 }
-#endif // DEBUG_LIGHTING
+#endif // DEBUG
