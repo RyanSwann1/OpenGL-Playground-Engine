@@ -48,6 +48,11 @@ void Camera::onMouseMove(float deltaTime, const sf::Window& window)
 	rotation.x += (static_cast<int>(window.getSize().y / 2) - sf::Mouse::getPosition(window).y) * sensitivity * deltaTime;
 	rotation.y += (sf::Mouse::getPosition(window).x - static_cast<int>(window.getSize().x / 2)) * sensitivity * deltaTime;
 
+	if (glm::abs(rotation.y) >= 360.0f)
+	{
+		rotation.y = 0.0f;
+	}
+
 	sf::Mouse::setPosition(sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2), window);
 
 	setFront();
