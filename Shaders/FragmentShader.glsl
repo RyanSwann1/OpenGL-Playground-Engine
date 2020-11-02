@@ -48,7 +48,7 @@ void main()
 		color = vec4(vec3(0.7), 1.0);
 	}
 
-	float distance    = length(vLightPosition - vFragPosition);
+	float distance = length(vLightPosition - vFragPosition);
 	float attenuation = 1.0 / (constantAttentuationParamater + linearAttenuationParamter * distance + 
 		quadraticAttenuationParameter * (distance * distance));
 

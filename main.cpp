@@ -20,16 +20,16 @@ std::vector<GameObject> loadGameObjects()
 	std::vector<GameObject> gameObjects;
 
 	gameObjects.emplace_back(ModelManager::getInstance().getModel(SPONZA_MODEL_NAME),
-		Transform(glm::vec3()));
+		Transform(glm::vec3(), glm::vec3(0.75f, 0.75f, 0.75f)));
 
 	gameObjects.emplace_back(ModelManager::getInstance().getModel(STANFORD_BUNNY_MODEL_NAME),
-		Transform({}, { 2500.0f, 2500.0f, 2500.0f }, { 0.0f, 90.0f, 0.0f }));
+		Transform({}, { 2000.0f, 2000.0f, 2000.0f }, { 0.0f, 90.0f, 0.0f }));
 	
 	gameObjects.emplace_back(ModelManager::getInstance().getModel(STANFORD_DRAGON_MODEL_NAME),
-		Transform({ 600.0f, 0.0f, 0.0f }, { 25.0f, 25.0f, 25.0f }, { 0.0f, 90.0f, 0.0f }));
+		Transform({ 600.0f, 0.0f, 0.0f }, { 20.0f, 20.0f, 20.0f }, { 0.0f, 90.0f, 0.0f }));
 	
 	gameObjects.emplace_back(ModelManager::getInstance().getModel(LUCY_STATUE_MODEL_NAME),
-		Transform({ -600.0f, 0.0f, 0.0f }, { 2.5f, 2.5f, 2.5f }, { 0.0f, -90.0f, 0.0f }));		
+		Transform({ -600.0f, 0.0f, 0.0f }, { 2.0f, 2.0f, 2.0f }, { 0.0f, -90.0f, 0.0f }));		
 
 	return gameObjects;
 }
