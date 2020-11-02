@@ -13,7 +13,8 @@ uniform bool uDiffuseTexture;
 uniform bool uSpecularTexture;
 uniform vec3 uMaterialColor;
 
-const vec3 lightPosition = vec3(2500.0, 2000.0, 500.0);
+uniform vec3 uLightPosition;
+
 const vec3 lightColor = vec3(1, 1, 0);
 const float ambientStrength = 0.7;
 
@@ -21,7 +22,7 @@ void main()
 {
 	//Diffuse Lighting
 	vec3 n = normalize(vNormal);
-	vec3 lightDirection = normalize(lightPosition - vFragPosition);
+	vec3 lightDirection = normalize(uLightPosition - vFragPosition);
 	vec3 diffuse = max(dot(n, lightDirection), 0.0) * lightColor;
 
 	if(uDiffuseTexture)
