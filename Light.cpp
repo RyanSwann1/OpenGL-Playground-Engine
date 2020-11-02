@@ -11,7 +11,9 @@ Light::Light(const glm::vec3& startingPosition, const glm::vec3& startingColor)
 	: position(startingPosition),
 	color(startingColor)
 {
+#ifdef DEBUG
 	MeshGenerator::generateCubeMesh(mesh);
+#endif // DEBUG
 }
 
 #ifdef DEBUG

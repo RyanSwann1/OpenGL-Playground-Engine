@@ -140,7 +140,6 @@ void Mesh::render(ShaderHandler& shaderHandler) const
 	}
 	else
 	{
-		shaderHandler.setUniformVec3(eShaderType::Default, "uMaterialColor", material.diffuse);
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);
 	}
 }

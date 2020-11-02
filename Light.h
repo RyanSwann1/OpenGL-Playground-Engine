@@ -3,9 +3,8 @@
 #include "glm/glm.hpp"
 #ifdef DEBUG
 #include "Mesh.h"
-#endif // DEBUG
-
 class ShaderHandler;
+#endif // DEBUG
 struct Light
 {
 	Light(const glm::vec3& startingPosition, const glm::vec3& startingColor);

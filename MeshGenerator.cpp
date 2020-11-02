@@ -2,6 +2,7 @@
 #include "Mesh.h"
 #include <array>
 
+#ifdef DEBUG
 namespace
 {
 	constexpr unsigned int CUBE_FACE_INDICIE_COUNT = 4;
@@ -82,8 +83,8 @@ void MeshGenerator::generateCubeMesh(Mesh& mesh, glm::vec3 position)
 
 void generateCubeFace(eCubeFace cubeFace, Mesh& mesh, unsigned int& elementBufferIndex, const glm::vec3& position)
 {
-	glm::vec3 centeredPosition = 
-		{ position.x - CUBE_FACE_SIZE / 2.0f, position.y - CUBE_FACE_SIZE / 2.0f, position.z - CUBE_FACE_SIZE / 2.0f };
+	glm::vec3 centeredPosition =
+	{ position.x - CUBE_FACE_SIZE / 2.0f, position.y - CUBE_FACE_SIZE / 2.0f, position.z - CUBE_FACE_SIZE / 2.0f };
 
 	switch (cubeFace)
 	{
@@ -144,3 +145,4 @@ void generateCubeFace(eCubeFace cubeFace, Mesh& mesh, unsigned int& elementBuffe
 
 	elementBufferIndex += CUBE_FACE_INDICIE_COUNT;
 }
+#endif // DEBUG
