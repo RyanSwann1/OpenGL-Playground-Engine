@@ -15,7 +15,7 @@ uniform bool uSpecularTexture;
 uniform vec3 uMaterialColor;
 uniform vec3 uLightColor;
 
-const float ambientStrength = 0.1;
+const float ambientStrength = 0.4;
 const float specularStrength = 0.5;
 const float constantAttentuationParamater = 1.0;
 const float linearAttenuationParamter = 0.0014;
@@ -53,4 +53,8 @@ void main()
 		quadraticAttenuationParameter * (distance * distance));
 
 	color = vec4(vec3((diffuse + specular) * color.rgb) * attenuation + vec3(ambientStrength) * color.rgb, 1.0 * color.w);	
+	if(color.a < 0.1)
+	{
+		discard;
+	}
 };
