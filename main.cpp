@@ -124,8 +124,9 @@ int main()
 	Camera camera;
 
 	std::vector<Light> lights;
-	lights.emplace_back(glm::vec3(-100.0f, 40.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-	lights.emplace_back(glm::vec3(100.0f, 40.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	lights.emplace_back(glm::vec3(-100.0f, 125.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	lights.emplace_back(glm::vec3(100.0f, 125.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	lights.emplace_back(glm::vec3(-175.0f, 20.5f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f));
 
 	std::cout << glGetError() << "\n";
 	std::cout << glGetError() << "\n";
@@ -150,10 +151,6 @@ int main()
 		}
 
 		camera.update(deltaTime, window);
-
-		//light.position.x = glm::sin(timeElasped * 2.0f) * 450.0f;
-		//light.position.y = sin(timeElasped) * 200.0f;
-		
 		ImGui_SFML_OpenGL3::startFrame();
 		displayOverlayGUI(camera);
 
@@ -170,8 +167,16 @@ int main()
 		float timeElasped = gameClock.getElapsedTime().asSeconds();
 		for (int i = 0; i < static_cast<int>(lights.size()); ++i)
 		{
-			float yOffset = glm::sin(timeElasped) * 1.0f;
-			lights[i].position.y += yOffset;
+			if (i < lights.size() - 1)
+			{
+				float yOffset = glm::sin(timeElasped) * 0.5f;
+				lights[i].position.y += yOffset;
+			}
+			else
+			{
+				float xOffset = glm::sin(timeElasped) * 2.5;
+				lights[i].position.x += xOffset;
+			}
 
 			shaderHandler->setUniformVec3(eShaderType::Default, 
 				"uPointLights[" + std::to_string(i) + "].position", glm::vec3(view * glm::vec4(lights[i].position, 1.0f)));

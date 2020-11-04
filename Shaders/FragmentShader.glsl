@@ -24,14 +24,14 @@ uniform vec3 uMaterialColor;
 uniform vec3 uLightColor;
 uniform Light uPointLights[POINT_LIGHT_COUNT];
 
-const float ambientStrength = 0.2;
+const float ambientStrength = 0.1;
 const float specularStrength = 0.5;
 const float constantAttentuationParamater = 1.0;
 const float linearAttenuationParamter = 0.007;
 const float quadraticAttenuationParameter = 0.0002;
 const vec3 directionalLightRotation = vec3(-0.14, 0.54, 0.0);
 const vec3 directionalLightColor = vec3(1.0, 1.0, 1.0);
-const float directionalLightItensity = 0.4;
+const float directionalLightItensity = 0.2;
 
 vec3 calculateDirectionalLight(vec3 n)
 {
