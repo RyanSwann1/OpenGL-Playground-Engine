@@ -13,10 +13,10 @@ namespace
 {
     struct LoadedTexture
     {
-        LoadedTexture(const MeshTextureDetails& meshTextureDetails)
-            : ID(meshTextureDetails.ID),
-            type(meshTextureDetails.type),
-            path(meshTextureDetails.path)
+        LoadedTexture(unsigned int ID, const std::string& type, const std::string& path)
+            : ID(ID),
+            type(type),
+            path(path)
         {}
 
         int ID;
@@ -117,7 +117,7 @@ void loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string
         {
             if (std::strcmp(loadedTexture.path.data(), str.C_Str()) == 0)
             {
-                textures.emplace_back(loadedTexture.ID, loadedTexture.type, loadedTexture.path);
+                textures.emplace_back(loadedTexture.ID, typeName, str.C_Str());
                 skip = true;
                 break;
             }
@@ -126,7 +126,7 @@ void loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string
         if (!skip)
         { 
             textures.emplace_back(TextureFromFile(str.C_Str(), directory), typeName, str.C_Str());
-            loadedTextures.emplace_back(textures.back());
+            loadedTextures.emplace_back(textures.back().ID, typeName, str.C_Str());
         }
     }
 }
