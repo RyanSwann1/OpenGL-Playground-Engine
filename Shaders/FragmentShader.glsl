@@ -87,12 +87,8 @@ vec3 calculatePointLight(vec3 n, Light light)
 		vec3 materialColor = vec3(0.7);
 		
 		diffuse = max(dot(lightDirection, n), 0.0) * light.color * materialColor;
-		diffuse *= attenuation;
 		specular = light.color * specularStrength * 
 			pow(max(dot(normalize(-vFragPosition), normalize(reflect(-lightDirection, n))), 0.0), 64) * materialColor;
-		specular *= attenuation;
-
-		return diffuse + specular;
 	}
 
 	return diffuse * attenuation + specular * attenuation;

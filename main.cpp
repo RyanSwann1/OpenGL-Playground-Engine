@@ -20,16 +20,16 @@ std::vector<GameObject> loadGameObjects()
 	std::vector<GameObject> gameObjects;
 
 	gameObjects.emplace_back(ModelManager::getInstance().getModel(SPONZA_MODEL_NAME),
-		Transform(glm::vec3(), glm::vec3(0.75f, 0.75f, 0.75f)));
+		Transform(glm::vec3(), glm::vec3(0.2f, 0.2f, 0.2f)));
 
 	gameObjects.emplace_back(ModelManager::getInstance().getModel(STANFORD_BUNNY_MODEL_NAME),
-		Transform({}, { 2000.0f, 2000.0f, 2000.0f }, { 0.0f, 90.0f, 0.0f }));
+		Transform({}, { 500.0f, 500.0f, 500.0f }, { 0.0f, 90.0f, 0.0f }));
 	
 	gameObjects.emplace_back(ModelManager::getInstance().getModel(STANFORD_DRAGON_MODEL_NAME),
-		Transform({ 600.0f, 0.0f, 0.0f }, { 20.0f, 20.0f, 20.0f }, { 0.0f, 90.0f, 0.0f }));
+		Transform({ 100.0f, 0.0f, 0.0f }, { 4.0f, 4.0f, 4.0f }, { 0.0f, 90.0f, 0.0f }));
 	
 	gameObjects.emplace_back(ModelManager::getInstance().getModel(LUCY_STATUE_MODEL_NAME),
-		Transform({ -600.0f, 0.0f, 0.0f }, { 2.0f, 2.0f, 2.0f }, { 0.0f, -90.0f, 0.0f }));		
+		Transform({ -100.0f, 0.0f, 0.0f }, { 0.45f, 0.45f, 0.45f }, { 0.0f, -90.0f, 0.0f }));		
 
 	return gameObjects;
 }
@@ -124,8 +124,8 @@ int main()
 	Camera camera;
 
 	std::vector<Light> lights;
-	lights.emplace_back(glm::vec3(-600.0f, 500.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-	//lights.emplace_back(glm::vec3(600.0f, 500.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	lights.emplace_back(glm::vec3(-100.0f, 40.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	lights.emplace_back(glm::vec3(100.0f, 40.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 	std::cout << glGetError() << "\n";
 	std::cout << glGetError() << "\n";
@@ -168,10 +168,9 @@ int main()
 		shaderHandler->setUniformMat4f(eShaderType::Default, "uView", view);
 
 		float timeElasped = gameClock.getElapsedTime().asSeconds();
-		float yOffset = 0.0f;
 		for (int i = 0; i < static_cast<int>(lights.size()); ++i)
 		{
-			yOffset = glm::sin(timeElasped) * 2.0f;
+			float yOffset = glm::sin(timeElasped) * 1.0f;
 			lights[i].position.y += yOffset;
 
 			shaderHandler->setUniformVec3(eShaderType::Default, 

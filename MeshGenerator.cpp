@@ -6,7 +6,7 @@
 namespace
 {
 	constexpr unsigned int CUBE_FACE_INDICIE_COUNT = 4;
-	constexpr float CUBE_FACE_SIZE = 40.0f;
+	constexpr float CUBE_FACE_SIZE = 5.0f;
 	constexpr std::array<unsigned int, 6> CUBE_FACE_INDICIES =
 	{
 		0, 1, 2,
