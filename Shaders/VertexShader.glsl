@@ -10,15 +10,15 @@ uniform mat4 uProjection;
 
 out vec3 vFragPosition;
 out vec3 vNormal;
-out vec3 vModelNormal;
 out vec2 vTextCoords;
 out vec3 vLightPosition;
+out vec3 vDirectionalLightDirection;
 
 void main()
 {
 	gl_Position = uProjection * uView * uModel * vec4(aPos, 1.0);
 	vFragPosition = vec3(uView * uModel * vec4(aPos, 1.0));
 	vNormal = mat3(transpose(inverse(uView * uModel))) * aNormal;
-	vModelNormal = mat3(transpose(inverse(uModel))) * aNormal;
+	vDirectionalLightDirection = mat3(transpose(inverse(uView))) * vec3(-0.14, 0.54, 0.0);
 	vTextCoords = aTextCoords;
 }

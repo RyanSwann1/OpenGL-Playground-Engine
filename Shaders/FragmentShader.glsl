@@ -10,9 +10,9 @@ struct Light
 
 out vec4 color;
 
+in vec3 vDirectionalLightDirection;
 in vec3 vFragPosition;
 in vec3 vNormal;
-in vec3 vModelNormal;
 in vec2 vTextCoords;
 
 uniform sampler2D texture_diffuse;
@@ -21,19 +21,19 @@ uniform bool uDiffuseTexture;
 uniform bool uSpecularTexture;
 uniform Light uPointLights[POINT_LIGHT_COUNT];
 
-const float ambientStrength = 0.1;
+const float ambientStrength = 0.2;
 const float specularStrength = 0.5;
 const float constantAttentuationParamater = 1.0;
 const float linearAttenuationParamter = 0.007;
 const float quadraticAttenuationParameter = 0.0002;
-const vec3 directionalLightRotation = vec3(-0.14, 0.54, 0.0);
 const vec3 directionalLightColor = vec3(1.0, 1.0, 1.0);
-const float directionalLightItensity = 0.2;
+const float directionalLightItensity = 0.3;
 
 vec3 calculateDirectionalLight(vec3 n)
 {
 	vec3 diffuse = vec3(0.0);
-	vec3 nDirectionalLight = normalize(directionalLightRotation);
+	//rename to directionLightDirection
+	vec3 nDirectionalLight = normalize(vDirectionalLightDirection);
 	if(uDiffuseTexture)
 	{
 		diffuse = texture(texture_diffuse, vTextCoords).rgb * 
@@ -107,7 +107,7 @@ void main()
 			result += calculatePointLight(n, uPointLights[i]);
 		}
 
-		color = vec4(result + calculateDirectionalLight(normalize(vModelNormal) + ambientStrength * materialColor), 1.0);
+		color = vec4(result + calculateDirectionalLight(n) + ambientStrength * materialColor, 1.0);
 		return;
 	}
 
@@ -125,7 +125,7 @@ void main()
 		result += calculatePointLight(n, uPointLights[i]);
 	}
 
-	color = vec4(vec3(result + calculateDirectionalLight(normalize(vModelNormal)) + ambient), diffuseAlpha);	
+	color = vec4(vec3(result + calculateDirectionalLight(n) + ambient), diffuseAlpha);	
 	if(color.a < 0.1)
 	{
 		discard;

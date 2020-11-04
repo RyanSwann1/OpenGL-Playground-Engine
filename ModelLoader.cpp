@@ -97,6 +97,7 @@ Mesh processMesh(aiMesh* mesh, const aiScene* scene, std::vector<LoadedTexture>&
     
     aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
     std::vector<MeshTextureDetails> textures;
+  
     loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse", loadedTextures, directory, textures);
     loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular", loadedTextures, directory, textures);
     loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal", loadedTextures, directory, textures);
