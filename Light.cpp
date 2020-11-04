@@ -17,7 +17,7 @@ Light::Light(const glm::vec3& startingPosition, const glm::vec3& startingColor)
 }
 
 #ifdef DEBUG
-void Light::render(ShaderHandler& shaderHandler) 
+void Light::render(ShaderHandler& shaderHandler) const
 {
 	mesh.bind();
 

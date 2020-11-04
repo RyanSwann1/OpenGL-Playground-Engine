@@ -10,7 +10,7 @@ struct Light
 	Light(const glm::vec3& startingPosition, const glm::vec3& startingColor);
 
 #ifdef DEBUG
-	void render(ShaderHandler& shaderHandler);
+	void render(ShaderHandler& shaderHandler) const;
 #endif // DEBUG
 
 	glm::vec3 position;

@@ -122,7 +122,10 @@ int main()
 	sf::Clock deltaClock;
 	sf::Clock gameClock;
 	Camera camera;
-	Light light({ 0.0f, 100.0f, 0.0f }, { 1.0f, 1.0f, 0.0f });
+
+	std::vector<Light> lights;
+	lights.emplace_back(glm::vec3(-600.0f, 500.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	//lights.emplace_back(glm::vec3(600.0f, 500.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 	std::cout << glGetError() << "\n";
 	std::cout << glGetError() << "\n";
@@ -148,10 +151,9 @@ int main()
 
 		camera.update(deltaTime, window);
 
-		float timeElasped = gameClock.getElapsedTime().asSeconds();
-		light.position.x = glm::sin(timeElasped * 2.0f) * 450.0f;
+		//light.position.x = glm::sin(timeElasped * 2.0f) * 450.0f;
 		//light.position.y = sin(timeElasped) * 200.0f;
-
+		
 		ImGui_SFML_OpenGL3::startFrame();
 		displayOverlayGUI(camera);
 
@@ -164,9 +166,19 @@ int main()
 		shaderHandler->switchToShader(eShaderType::Default);
 		shaderHandler->setUniformMat4f(eShaderType::Default, "uProjection", projection);
 		shaderHandler->setUniformMat4f(eShaderType::Default, "uView", view);
-		
-		shaderHandler->setUniformVec3(eShaderType::Default, "uLightPosition", light.position);
-		shaderHandler->setUniformVec3(eShaderType::Default, "uLightColor", light.color);
+
+		float timeElasped = gameClock.getElapsedTime().asSeconds();
+		float yOffset = 0.0f;
+		for (int i = 0; i < static_cast<int>(lights.size()); ++i)
+		{
+			yOffset = glm::sin(timeElasped) * 2.0f;
+			lights[i].position.y += yOffset;
+
+			shaderHandler->setUniformVec3(eShaderType::Default, 
+				"uPointLights[" + std::to_string(i) + "].position", glm::vec3(view * glm::vec4(lights[i].position, 1.0f)));
+			shaderHandler->setUniformVec3(eShaderType::Default, "uPointLights[" + std::to_string(i) + "].color", lights[i].color);
+		}
+
 		for (const auto& gameObject : gameObjects)
 		{
 			gameObject.render(*shaderHandler);
@@ -176,8 +188,11 @@ int main()
 		shaderHandler->switchToShader(eShaderType::Debug);
 		shaderHandler->setUniformMat4f(eShaderType::Debug, "uProjection", projection);
 		shaderHandler->setUniformMat4f(eShaderType::Debug, "uView", view);
-		
-		light.render(*shaderHandler);
+			
+		for (const auto& light : lights)
+		{
+			light.render(*shaderHandler);
+		}
 #endif // DEBUG
 
 		ImGui_SFML_OpenGL3::endFrame();
