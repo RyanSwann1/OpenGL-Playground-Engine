@@ -12,6 +12,7 @@ uniform vec3 uLightPosition;
 
 out vec3 vFragPosition;
 out vec3 vNormal;
+out vec3 vModelNormal;
 out vec2 vTextCoords;
 out vec3 vLightPosition;
 
@@ -21,5 +22,6 @@ void main()
 	vFragPosition = vec3(uView * uModel * vec4(aPos, 1.0));
 	vLightPosition = vec3(uView * vec4(uLightPosition, 1.0));
 	vNormal = mat3(transpose(inverse(uView * uModel))) * aNormal;
+	vModelNormal = mat3(transpose(inverse(uModel))) * aNormal;
 	vTextCoords = aTextCoords;
 }
