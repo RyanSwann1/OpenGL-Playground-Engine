@@ -112,6 +112,7 @@ void Mesh::attachToVAO() const
 void Mesh::render(ShaderHandler& shaderHandler) const
 {
 	bind();
+
 	shaderHandler.setUniform1i(eShaderType::Default, "uDiffuseTexture", static_cast<int>(false));
 	shaderHandler.setUniform1i(eShaderType::Default, "uSpecularTexture", static_cast<int>(false));
 	if(!textures.empty())

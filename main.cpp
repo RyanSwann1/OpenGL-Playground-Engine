@@ -149,8 +149,8 @@ int main()
 		camera.update(deltaTime, window);
 
 		float timeElasped = gameClock.getElapsedTime().asSeconds();
-		light.position.x = glm::sin(timeElasped * 2.0f) * 300.0f;
-		//light.position.y = sin(timeElasped * 2.0f) * 250.0f;
+		light.position.x = glm::sin(timeElasped * 2.0f) * 450.0f;
+		//light.position.y = sin(timeElasped) * 200.0f;
 
 		ImGui_SFML_OpenGL3::startFrame();
 		displayOverlayGUI(camera);

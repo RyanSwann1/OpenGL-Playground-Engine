@@ -4,7 +4,7 @@
 
 namespace
 {
-	constexpr float MOVEMENT_SPEED = 100.0f;
+	constexpr float MOVEMENT_SPEED = 75.0f;
 	constexpr float SENSITIVITY = 4.0f;
 	constexpr float NEAR_PLANE_DISTANCE = 0.1f;
 	constexpr float FAR_PLANE_DISTANCE = 15000.0f;
