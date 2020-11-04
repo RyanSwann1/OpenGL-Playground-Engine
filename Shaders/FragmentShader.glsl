@@ -15,7 +15,7 @@ uniform bool uSpecularTexture;
 uniform vec3 uMaterialColor;
 uniform vec3 uLightColor;
 
-const float ambientStrength = 0.2;
+const float ambientStrength = 0.4;
 const float specularStrength = 0.5;
 const float constantAttentuationParamater = 1.0;
 const float linearAttenuationParamter = 0.0014;

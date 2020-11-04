@@ -30,7 +30,7 @@ namespace
 void processNode(aiNode* node, const aiScene* scene, std::vector<Mesh>& meshes, std::vector<LoadedTexture>& loadedTextures, 
 const std::string& directory);
 Mesh processMesh(aiMesh* mesh, const aiScene* scene, std::vector<LoadedTexture>& loadedTextures, const std::string& directory);
-unsigned int TextureFromFile(const char* path, const std::string& directory);
+bool loadTextureFromFile(const char* path, const std::string& directory, unsigned int& textureID);
 void loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& typeName, std::vector<LoadedTexture>& loadedTextures,
     const std::string& directory, std::vector<MeshTextureDetails>& textures);
 Material loadMaterial(aiMaterial* mat);
@@ -125,8 +125,14 @@ void loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string
 
         if (!skip)
         { 
-            textures.emplace_back(TextureFromFile(str.C_Str(), directory), typeName, str.C_Str());
-            loadedTextures.emplace_back(textures.back().ID, typeName, str.C_Str());
+            unsigned int textureID = 0;
+            bool textureLoaded = loadTextureFromFile(str.C_Str(), directory, textureID);
+            assert(textureLoaded);
+            if (textureLoaded)
+            {
+                textures.emplace_back(textureID, typeName, str.C_Str());
+                loadedTextures.emplace_back(textures.back().ID, typeName, str.C_Str());
+            }
         }
     }
 }
@@ -152,18 +158,23 @@ Material loadMaterial(aiMaterial* mat)
     return material;
 }
 
-unsigned int TextureFromFile(const char* path, const std::string& directory)
+bool loadTextureFromFile(const char* path, const std::string& directory, unsigned int& textureID)
 {
     std::string fileName = std::string(path);
     fileName = directory + '/' + fileName;
 
-    unsigned int textureID;
-    glGenTextures(1, &textureID);
-
     int width, height, nrComponents;
     unsigned char* data = stbi_load(fileName.c_str(), &width, &height, &nrComponents, 0);
+    if (!data)
+    {
+        std::cout << "Texture failed to load at path: " << fileName << "\n";
+        stbi_image_free(data);
+        return false;
+    }
     if (data)
     {
+        glGenTextures(1, &textureID);
+
         GLenum format;
         if (nrComponents == 1)
             format = GL_RED;
@@ -182,12 +193,6 @@ unsigned int TextureFromFile(const char* path, const std::string& directory)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
         stbi_image_free(data);
+        return true;
     }
-    else
-    {
-        std::cout << "Texture failed to load at path: " << fileName << std::endl;
-        stbi_image_free(data);
-    }
-
-    return textureID;
 }
