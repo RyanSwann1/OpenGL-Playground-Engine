@@ -12,7 +12,7 @@ namespace
 	constexpr float MIN_VELOCITY = 0.2f;
 	constexpr float VELOCITY_DROPOFF = 0.9f;
 
-	constexpr glm::vec3 STARTING_POSITION = { 0.0f, 500.0f, 0.0 };
+	constexpr glm::vec3 STARTING_POSITION = { 0.0f, 50.0f, 0.0 };
 }
 
 Camera::Camera()

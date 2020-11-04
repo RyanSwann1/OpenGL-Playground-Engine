@@ -8,8 +8,6 @@ uniform mat4 uModel;
 uniform mat4 uView;
 uniform mat4 uProjection;
 
-uniform vec3 uLightPosition;
-
 out vec3 vFragPosition;
 out vec3 vNormal;
 out vec3 vModelNormal;
@@ -20,7 +18,6 @@ void main()
 {
 	gl_Position = uProjection * uView * uModel * vec4(aPos, 1.0);
 	vFragPosition = vec3(uView * uModel * vec4(aPos, 1.0));
-	vLightPosition = vec3(uView * vec4(uLightPosition, 1.0));
 	vNormal = mat3(transpose(inverse(uView * uModel))) * aNormal;
 	vModelNormal = mat3(transpose(inverse(uModel))) * aNormal;
 	vTextCoords = aTextCoords;

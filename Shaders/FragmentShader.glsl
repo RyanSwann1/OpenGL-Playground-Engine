@@ -14,14 +14,11 @@ in vec3 vFragPosition;
 in vec3 vNormal;
 in vec3 vModelNormal;
 in vec2 vTextCoords;
-in vec3 vLightPosition;
 
 uniform sampler2D texture_diffuse;
 uniform sampler2D texture_specular;
 uniform bool uDiffuseTexture;
 uniform bool uSpecularTexture;
-uniform vec3 uMaterialColor;
-uniform vec3 uLightColor;
 uniform Light uPointLights[POINT_LIGHT_COUNT];
 
 const float ambientStrength = 0.1;
@@ -97,7 +94,6 @@ vec3 calculatePointLight(vec3 n, Light light)
 void main()
 {
 	vec3 n = normalize(vNormal);
-	vec3 lightDirection = normalize(vLightPosition - vFragPosition);
 
 	vec3 diffuse = vec3(0.0);
 	vec3 specular = vec3(0.0);
@@ -105,10 +101,6 @@ void main()
 	if(!uDiffuseTexture && !uSpecularTexture)
 	{
 		vec3 materialColor = vec3(0.7);
-		diffuse = max(dot(lightDirection, n), 0.0) * uLightColor * materialColor;
-		specular = uLightColor * specularStrength * 
-			pow(max(dot(normalize(-vFragPosition), normalize(reflect(-lightDirection, n))), 0.0), 64) * materialColor;
-
 		vec3 result = vec3(0.0);
 		for(int i = 0; i < POINT_LIGHT_COUNT; ++i)
 		{
