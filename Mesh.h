@@ -3,10 +3,9 @@
 #include "NonCopyable.h"
 #include "NonMovable.h"
 #include "glm/glm.hpp"
+#include "Texture.h"
 #include <vector>
 #include <string>
-
-//https://vulkan-tutorial.com/Loading_models
 
 struct Material 
 {
@@ -16,18 +15,6 @@ struct Material
 	glm::vec3 specular;
 	glm::vec3 ambient;
 	float shininess;
-};
-
-struct MeshTextureDetails : private NonCopyable
-{
-	MeshTextureDetails(unsigned int ID, const std::string& type, const std::string& path);
-	MeshTextureDetails(MeshTextureDetails&&) noexcept;
-	MeshTextureDetails& operator=(MeshTextureDetails&&) noexcept;
-	~MeshTextureDetails();
-
-	unsigned int ID;
-	std::string type;
-	std::string path;
 };
 
 struct Vertex
@@ -46,7 +33,8 @@ class ShaderHandler;
 struct Mesh : private NonCopyable
 {
 	Mesh();
-	Mesh(std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices, std::vector<MeshTextureDetails>&& textures, const Material& material);
+	Mesh(std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices, 
+		std::vector<std::reference_wrapper<const Texture>>&& textures, const Material& material);
 	Mesh(Mesh&&) noexcept;
 	Mesh& operator=(Mesh&&) noexcept;
 	~Mesh();
@@ -60,6 +48,6 @@ struct Mesh : private NonCopyable
 	unsigned int indiciesID;
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
-	std::vector<MeshTextureDetails> textures;
+	std::vector<std::reference_wrapper<const Texture>> textures;
 	Material material;
 };

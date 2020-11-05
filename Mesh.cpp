@@ -19,7 +19,8 @@ Mesh::Mesh()
 	glGenBuffers(1, &indiciesID);
 }
 
-Mesh::Mesh(std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices, std::vector<MeshTextureDetails>&& textures, const Material& material)
+Mesh::Mesh(std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices, 
+	std::vector<std::reference_wrapper<const Texture>>&& textures, const Material& material)
 	: vaoID(Globals::INVALID_OPENGL_ID),
 	vboID(Globals::INVALID_OPENGL_ID),
 	indiciesID(Globals::INVALID_OPENGL_ID),
@@ -119,23 +120,23 @@ void Mesh::render(ShaderHandler& shaderHandler) const
 	{ 
 		auto textureDiffuse = std::find_if(textures.cbegin(), textures.cend(), [](const auto& texture)
 		{
-			return texture.type == "texture_diffuse";
+			return texture.get().type == "texture_diffuse";
 		});
 		if (textureDiffuse != textures.cend())
 		{
 			shaderHandler.setUniform1i(eShaderType::Default, "uDiffuseTexture", static_cast<int>(true));
-			glBindTexture(GL_TEXTURE_2D, textureDiffuse->ID);
+			glBindTexture(GL_TEXTURE_2D, textureDiffuse->get().ID);
 			glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);
 		}
 
 		auto textureSpecular = std::find_if(textures.cbegin(), textures.cend(), [](const auto& texture)
 		{
-			return texture.type == "texture_specular";
+			return texture.get().type == "texture_specular";
 		});
 		if (textureSpecular != textures.cend())
 		{
 			shaderHandler.setUniform1i(eShaderType::Default, "uSpecularTexture", static_cast<int>(true));
-			glBindTexture(GL_TEXTURE_2D, textureSpecular->ID);
+			glBindTexture(GL_TEXTURE_2D, textureSpecular->get().ID);
 			glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);
 		}
 	}
@@ -159,41 +160,6 @@ Vertex::Vertex(const glm::vec3& position)
 	textCoords()
 {}
 #endif // DEBUG
-
-//MeshTextureDetails
-MeshTextureDetails::MeshTextureDetails(unsigned int ID, const std::string& type, const std::string& path)
-	: ID(ID),
-	type(type),
-	path(path)
-{}
-
-MeshTextureDetails::MeshTextureDetails(MeshTextureDetails&& orig) noexcept
-	: ID(orig.ID),
-	type(orig.type),
-	path(std::move(orig.path))
-{
-	orig.ID = Globals::INVALID_OPENGL_ID;
-}
-
-MeshTextureDetails& MeshTextureDetails::operator=(MeshTextureDetails&& orig) noexcept
-{
-	ID = orig.ID;
-	type = orig.type;
-	path = std::move(orig.path);
-
-	orig.ID = Globals::INVALID_OPENGL_ID;
-
-	return *this;
-}
-
-MeshTextureDetails::~MeshTextureDetails()
-{
-	if (ID != Globals::INVALID_OPENGL_ID)
-	{
-		std::cout << ID << "\n";
-		glDeleteTextures(1, &ID);
-	}
-}
 
 //Material
 Material::Material()
