@@ -9,19 +9,6 @@
 
 namespace
 {
-    struct LoadedTexture
-    {
-        LoadedTexture(unsigned int ID, const std::string& type, const std::string& path)
-            : ID(ID),
-            type(type),
-            path(path)
-        {}
-
-        int ID;
-        std::string type;
-        std::string path;
-    };
-
     const std::string MODELS_DIRECTORY = "models/";
 }
 
