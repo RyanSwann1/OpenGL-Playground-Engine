@@ -3,6 +3,7 @@
 #include "NonCopyable.h"
 #include "NonMovable.h"
 #include "glm/glm.hpp"
+#include "Texture.h"
 #include <vector>
 #include <string>
 
@@ -60,6 +61,6 @@ struct Mesh : private NonCopyable
 	unsigned int indiciesID;
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
-	std::vector<MeshTextureDetails> textures;
+	std::vector<std::unique_ptr<Texture>> textures;
 	Material material;
 };

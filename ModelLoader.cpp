@@ -1,8 +1,6 @@
 #include "ModelLoader.h"
 #include "Model.h"
 #include "glad.h"
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -30,7 +28,6 @@ namespace
 void processNode(aiNode* node, const aiScene* scene, std::vector<Mesh>& meshes, std::vector<LoadedTexture>& loadedTextures, 
 const std::string& directory);
 Mesh processMesh(aiMesh* mesh, const aiScene* scene, std::vector<LoadedTexture>& loadedTextures, const std::string& directory);
-bool loadTextureFromFile(const char* path, const std::string& directory, unsigned int& textureID);
 void loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& typeName, std::vector<LoadedTexture>& loadedTextures,
     const std::string& directory, std::vector<MeshTextureDetails>& textures);
 Material loadMaterial(aiMaterial* mat);
@@ -126,6 +123,12 @@ void loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string
 
         if (!skip)
         { 
+            std::unique_ptr<Texture> texture = Texture::create(str.C_Str(), directory);
+            assert(texture);
+            if (texture)
+            {
+                
+            }
             unsigned int textureID = 0;
             bool textureLoaded = loadTextureFromFile(str.C_Str(), directory, textureID);
             assert(textureLoaded);
