@@ -190,6 +190,7 @@ MeshTextureDetails::~MeshTextureDetails()
 {
 	if (ID != Globals::INVALID_OPENGL_ID)
 	{
+		std::cout << ID << "\n";
 		glDeleteTextures(1, &ID);
 	}
 }
