@@ -7,11 +7,12 @@
 #include <memory>
 #include <vector>
 
+struct Texture;
 struct Transform;
 class ShaderHandler;
 struct Model : private NonMovable, private NonCopyable
 {
-	static std::unique_ptr<Model> create(const std::string& fileName);
+	static std::unique_ptr<Model> create(const std::string& fileName, std::vector<std::unique_ptr<Texture>>& loadedTextures);
 
 	void render(ShaderHandler& shaderHandler, const Transform& transform) const;
 

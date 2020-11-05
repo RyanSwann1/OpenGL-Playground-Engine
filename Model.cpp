@@ -21,10 +21,10 @@ void Model::attachMeshesToVAO() const
 	}
 }
 
-std::unique_ptr<Model> Model::create(const std::string & fileName)
+std::unique_ptr<Model> Model::create(const std::string & fileName, std::vector<std::unique_ptr<Texture>>& loadedTextures)
 {
 	std::vector<Mesh> meshes;
-	if (!ModelLoader::loadModel(fileName, meshes))
+	if (!ModelLoader::loadModel(fileName, meshes, loadedTextures))
 	{
 		return std::unique_ptr<Model>();
 	}

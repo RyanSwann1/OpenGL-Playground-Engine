@@ -10,6 +10,7 @@
 #include "Light.h"
 #include "imgui/imgui.h"
 #include "imgui_impl/imgui_wrapper.h"
+
 #include <vector>
 #include <iostream>
 #include <sstream>
@@ -111,13 +112,14 @@ int main()
 		std::cout << "Failed to load Shader Handler\n";
 		return -1;
 	}
-
+	
 	std::unique_ptr<ModelManager> modelManager = ModelManager::create();
 	assert(modelManager);
 	if (!modelManager)
 	{
 		std::cout << "Failed to load all models\n";
 	}
+
 
 	const std::vector<GameObject> gameObjects = loadGameObjects(*modelManager);
 	sf::Clock deltaClock;
