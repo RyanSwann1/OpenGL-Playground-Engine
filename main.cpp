@@ -118,8 +118,8 @@ int main()
 	if (!modelManager)
 	{
 		std::cout << "Failed to load all models\n";
+		return -1;
 	}
-
 
 	const std::vector<GameObject> gameObjects = loadGameObjects(*modelManager);
 	sf::Clock deltaClock;
