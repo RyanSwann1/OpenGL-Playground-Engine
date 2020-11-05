@@ -15,20 +15,20 @@
 #include <sstream>
 #include <iomanip>
 
-std::vector<GameObject> loadGameObjects()
+std::vector<GameObject> loadGameObjects(const ModelManager& modelManager)
 {
 	std::vector<GameObject> gameObjects;
 
-	gameObjects.emplace_back(ModelManager::getInstance().getModel(SPONZA_MODEL_NAME),
+	gameObjects.emplace_back(modelManager.getModel(SPONZA_MODEL_NAME),
 		Transform(glm::vec3(), glm::vec3(0.2f, 0.2f, 0.2f)));
 
-	gameObjects.emplace_back(ModelManager::getInstance().getModel(STANFORD_BUNNY_MODEL_NAME),
+	gameObjects.emplace_back(modelManager.getModel(STANFORD_BUNNY_MODEL_NAME),
 		Transform({}, { 500.0f, 500.0f, 500.0f }, { 0.0f, 90.0f, 0.0f }));
 	
-	gameObjects.emplace_back(ModelManager::getInstance().getModel(STANFORD_DRAGON_MODEL_NAME),
+	gameObjects.emplace_back(modelManager.getModel(STANFORD_DRAGON_MODEL_NAME),
 		Transform({ 100.0f, 0.0f, 0.0f }, { 4.0f, 4.0f, 4.0f }, { 0.0f, 90.0f, 0.0f }));
 	
-	gameObjects.emplace_back(ModelManager::getInstance().getModel(LUCY_STATUE_MODEL_NAME),
+	gameObjects.emplace_back(modelManager.getModel(LUCY_STATUE_MODEL_NAME),
 		Transform({ -100.0f, 0.0f, 0.0f }, { 0.45f, 0.45f, 0.45f }, { 0.0f, -90.0f, 0.0f }));		
 
 	return gameObjects;
@@ -112,13 +112,14 @@ int main()
 		return -1;
 	}
 
-	if (!ModelManager::getInstance().isAllModelsLoaded())
+	std::unique_ptr<ModelManager> modelManager = ModelManager::create();
+	assert(modelManager);
+	if (!modelManager)
 	{
 		std::cout << "Failed to load all models\n";
-		return -1;
 	}
 
-	const std::vector<GameObject> gameObjects = loadGameObjects();
+	const std::vector<GameObject> gameObjects = loadGameObjects(*modelManager);
 	sf::Clock deltaClock;
 	sf::Clock gameClock;
 	Camera camera;

@@ -51,9 +51,23 @@ namespace
 	}
 }
 
-ModelManager::ModelManager()
-	: models(loadModels())
+ModelManager::ModelManager(std::array<std::unique_ptr<Model>, MAX_MODELS>&& models)
+	: models(std::move(models))
 {}
+
+std::unique_ptr<ModelManager> ModelManager::create()
+{
+	std::array<std::unique_ptr<Model>, MAX_MODELS> models = loadModels();
+	for (const auto& model : models)
+	{
+		if (!model)
+		{
+			return std::unique_ptr<ModelManager>();
+		}
+	}
+
+	return std::unique_ptr<ModelManager>(new ModelManager(std::move(models)));
+}
 
 const Model& ModelManager::getModel(const std::string& modelName) const
 {
@@ -64,17 +78,4 @@ const Model& ModelManager::getModel(const std::string& modelName) const
 	assert(model != models.cend());
 
 	return *(*model);
-}
-
-bool ModelManager::isAllModelsLoaded() const
-{
-	for (const auto& model : models)
-	{
-		if (!model)
-		{
-			return false;
-		}
-	}
-
-	return true;
 }
