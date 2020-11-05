@@ -9,9 +9,10 @@ const std::string LUCY_STATUE_MODEL_NAME = "metallic-lucy-statue-stanford-scan.o
 
 namespace 
 {	
-	void loadModel(const std::string& fileName, std::array<std::unique_ptr<Model>, MAX_MODELS>& models)
+	void loadModel(const std::string& fileName, std::array<std::unique_ptr<Model>, MAX_MODELS>& models, 
+		std::vector<std::unique_ptr<Texture>>& loadedTextures)
 	{
-		std::unique_ptr<Model> model = Model::create(fileName);
+		std::unique_ptr<Model> model = Model::create(fileName, loadedTextures);
 		assert(model);
 		if (!model)
 		{
@@ -38,26 +39,29 @@ namespace
 		}
 	}
 
-	std::array<std::unique_ptr<Model>, MAX_MODELS> loadModels()
+	std::array<std::unique_ptr<Model>, MAX_MODELS> loadModels(std::vector<std::unique_ptr<Texture>>& loadedTextures)
 	{
 		std::array<std::unique_ptr<Model>, MAX_MODELS> models;
-
-		loadModel(SPONZA_MODEL_NAME, models);
-		loadModel(STANFORD_BUNNY_MODEL_NAME, models);
-		loadModel(STANFORD_DRAGON_MODEL_NAME, models);
-		loadModel(LUCY_STATUE_MODEL_NAME, models);
+		
+		loadModel(SPONZA_MODEL_NAME, models, loadedTextures);
+		loadModel(STANFORD_BUNNY_MODEL_NAME, models, loadedTextures);
+		loadModel(STANFORD_DRAGON_MODEL_NAME, models, loadedTextures);
+		loadModel(LUCY_STATUE_MODEL_NAME, models, loadedTextures);
 
 		return models;
 	}
 }
 
-ModelManager::ModelManager(std::array<std::unique_ptr<Model>, MAX_MODELS>&& models)
-	: models(std::move(models))
+ModelManager::ModelManager(std::array<std::unique_ptr<Model>, MAX_MODELS>&& models, 
+	std::vector<std::unique_ptr<Texture>>&& loadedTextures)
+	: models(std::move(models)),
+	loadedTextures(std::move(loadedTextures))	
 {}
 
 std::unique_ptr<ModelManager> ModelManager::create()
 {
-	std::array<std::unique_ptr<Model>, MAX_MODELS> models = loadModels();
+	std::vector<std::unique_ptr<Texture>> loadedTextures;
+	std::array<std::unique_ptr<Model>, MAX_MODELS> models = loadModels(loadedTextures);
 	for (const auto& model : models)
 	{
 		if (!model)
@@ -66,7 +70,7 @@ std::unique_ptr<ModelManager> ModelManager::create()
 		}
 	}
 
-	return std::unique_ptr<ModelManager>(new ModelManager(std::move(models)));
+	return std::unique_ptr<ModelManager>(new ModelManager(std::move(models), std::move(loadedTextures)));
 }
 
 const Model& ModelManager::getModel(const std::string& modelName) const

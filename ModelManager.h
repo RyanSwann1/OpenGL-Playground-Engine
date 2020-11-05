@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Model.h"
+#include "Texture.h"
 #include <memory>
 #include <array>
 
@@ -17,7 +18,9 @@ struct ModelManager : private NonCopyable, private NonMovable
 	const Model& getModel(const std::string& modelName) const;
 
 	const std::array<std::unique_ptr<Model>, MAX_MODELS> models;
+	const std::vector<std::unique_ptr<Texture>> loadedTextures;
 
 private:
-	ModelManager(std::array<std::unique_ptr<Model>, MAX_MODELS>&& models);
+	ModelManager(std::array<std::unique_ptr<Model>, MAX_MODELS>&& models, 
+		std::vector<std::unique_ptr<Texture>>&& loadedTextures);
 };
