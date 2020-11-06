@@ -93,13 +93,7 @@ Mesh processMesh(aiMesh* mesh, const aiScene* scene, std::vector<std::unique_ptr
     loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular", loadedTextures, directory, textures);
     loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal", loadedTextures, directory, textures);
 
-    bool materialMesh = true;
-    if (Globals::getTexture(textures, "texture_diffuse"))
-    {
-        materialMesh = false;
-    }
-
-    return Mesh(std::move(vertices), std::move(indices), std::move(textures), loadMaterial(material), materialMesh);
+    return Mesh(std::move(vertices), std::move(indices), std::move(textures), loadMaterial(material));
 }
 
 void loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& typeName, std::vector<std::unique_ptr<Texture>>& loadedTextures,
