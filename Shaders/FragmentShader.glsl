@@ -17,8 +17,6 @@ in vec2 vTextCoords;
 
 uniform sampler2D texture_diffuse;
 uniform sampler2D texture_specular;
-uniform bool uDiffuseTexture;
-uniform bool uSpecularTexture;
 uniform Light uPointLights[POINT_LIGHT_COUNT];
 
 const float ambientStrength = 0.2;
@@ -31,30 +29,15 @@ const float directionalLightItensity = 0.3;
 
 vec3 calculateDirectionalLight(vec3 n)
 {
-	vec3 diffuse = vec3(0.0);
 	//rename to directionLightDirection
 	vec3 nDirectionalLight = normalize(vDirectionalLightDirection);
-	if(uDiffuseTexture)
-	{
-		diffuse = texture(texture_diffuse, vTextCoords).rgb * 
-			max(dot(nDirectionalLight, n), 0.0) * directionalLightColor * directionalLightItensity;
-	}
 
-	vec3 specular = vec3(0.0);
-	if(uSpecularTexture)
-	{
-		specular = texture(texture_specular, vTextCoords).rgb * directionalLightColor * directionalLightItensity * specularStrength * 
-			pow(max(dot(normalize(-vFragPosition), normalize(-reflect(nDirectionalLight, n))), 0.0), 64);
-	}
+	vec3 diffuse = texture(texture_diffuse, vTextCoords).rgb * 
+		max(dot(nDirectionalLight, n), 0.0) * directionalLightColor * directionalLightItensity;
 
-	if(!uDiffuseTexture && !uSpecularTexture)
-	{
-		vec3 materialColor = vec3(0.7);
-		diffuse = max(dot(nDirectionalLight, n), 0.0) * directionalLightColor * directionalLightItensity * materialColor;
-		specular = directionalLightColor * directionalLightItensity * specularStrength * 
-			pow(max(dot(normalize(-vFragPosition), normalize(-reflect(nDirectionalLight, n))), 0.0), 64) * materialColor;
-	}
-
+	vec3 specular = texture(texture_specular, vTextCoords).rgb * directionalLightColor * directionalLightItensity * specularStrength * 
+	pow(max(dot(normalize(-vFragPosition), normalize(-reflect(nDirectionalLight, n))), 0.0), 64);
+	
 	return diffuse + specular;
 }
 
@@ -66,28 +49,11 @@ vec3 calculatePointLight(vec3 n, Light light)
 	float attenuation = 1.0 / (constantAttentuationParamater + linearAttenuationParamter * distance + 
 		quadraticAttenuationParameter * (distance * distance));
 
-	vec3 diffuse = vec3(0.0);
-	if(uDiffuseTexture)
-	{
-		diffuse = texture(texture_diffuse, vTextCoords).rgb * max(dot(lightDirection, n), 0.0) * light.color;	
-	}
+	vec3 diffuse = texture(texture_diffuse, vTextCoords).rgb * max(dot(lightDirection, n), 0.0) * light.color;	
 	
-	vec3 specular = vec3(0.0);
-	if(uSpecularTexture)
-	{
-		specular = texture(texture_specular, vTextCoords).rgb * light.color * specularStrength * 
-			pow(max(dot(normalize(-vFragPosition), normalize(reflect(-lightDirection, n))), 0.0), 64);
-	}
-
-	if(!uDiffuseTexture && !uSpecularTexture)
-	{
-		vec3 materialColor = vec3(0.7);
-		
-		diffuse = max(dot(lightDirection, n), 0.0) * light.color * materialColor;
-		specular = light.color * specularStrength * 
-			pow(max(dot(normalize(-vFragPosition), normalize(reflect(-lightDirection, n))), 0.0), 64) * materialColor;
-	}
-
+	vec3 specular = texture(texture_specular, vTextCoords).rgb * light.color * specularStrength * 
+	pow(max(dot(normalize(-vFragPosition), normalize(reflect(-lightDirection, n))), 0.0), 64);
+	
 	return diffuse * attenuation + specular * attenuation;
 }
 
@@ -95,30 +61,12 @@ void main()
 {
 	vec3 n = normalize(vNormal);
 
-	vec3 diffuse = vec3(0.0);
-	vec3 specular = vec3(0.0);
-
-	if(!uDiffuseTexture && !uSpecularTexture)
-	{
-		vec3 materialColor = vec3(0.7);
-		vec3 result = vec3(0.0);
-		for(int i = 0; i < POINT_LIGHT_COUNT; ++i)
-		{
-			result += calculatePointLight(n, uPointLights[i]);
-		}
-
-		color = vec4(result + calculateDirectionalLight(n) + ambientStrength * materialColor, 1.0);
-		return;
-	}
-
 	float diffuseAlpha = 1.0;
 	vec3 ambient = vec3(0.0);
-	if(uDiffuseTexture)
-	{
-		diffuseAlpha = texture(texture_diffuse, vTextCoords).a;
-		ambient = texture(texture_diffuse, vTextCoords).rgb * ambientStrength;
-	}
 
+	diffuseAlpha = texture(texture_diffuse, vTextCoords).a;
+	ambient = texture(texture_diffuse, vTextCoords).rgb * ambientStrength;
+	
 	vec3 result = vec3(0.0);
 	for(int i = 0; i < POINT_LIGHT_COUNT; ++i)
 	{
