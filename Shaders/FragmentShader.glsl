@@ -6,6 +6,8 @@ struct Light
 {
 	vec3 position;
 	vec3 color;
+	float radius;
+	float compression;
 };
 
 out vec4 color;
@@ -21,15 +23,11 @@ uniform Light uPointLights[POINT_LIGHT_COUNT];
 
 const float ambientStrength = 0.2;
 const float specularStrength = 0.5;
-const float constantAttentuationParamater = 1.0;
-const float linearAttenuationParamter = 0.007;
-const float quadraticAttenuationParameter = 0.0002;
 const vec3 directionalLightColor = vec3(1.0, 1.0, 1.0);
 const float directionalLightItensity = 0.3;
 
 vec3 calculateDirectionalLight(vec3 n)
 {
-	//rename to directionLightDirection
 	vec3 nDirectionalLight = normalize(vDirectionalLightDirection);
 
 	vec3 diffuse = texture(texture_diffuse, vTextCoords).rgb * 
@@ -46,8 +44,7 @@ vec3 calculatePointLight(vec3 n, Light light)
 	vec3 lightDirection = normalize(light.position - vFragPosition);
 
 	float distance = length(light.position - vFragPosition);
-	float attenuation = 1.0 / (constantAttentuationParamater + linearAttenuationParamter * distance + 
-		quadraticAttenuationParameter * (distance * distance));
+	float attenuation = pow(smoothstep(light.radius, 0, length(light.position - vFragPosition)), light.compression);
 
 	vec3 diffuse = texture(texture_diffuse, vTextCoords).rgb * max(dot(lightDirection, n), 0.0) * light.color;	
 	
