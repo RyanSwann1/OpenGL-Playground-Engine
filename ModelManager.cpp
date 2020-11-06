@@ -1,5 +1,6 @@
 #include "ModelManager.h"
-#include "ModelManager.h"
+#include "Globals.h"
+
 #include <iostream>
 
 const std::string SPONZA_MODEL_NAME = "sponza.obj";
@@ -61,6 +62,25 @@ ModelManager::ModelManager(std::array<std::unique_ptr<Model>, MAX_MODELS>&& mode
 std::unique_ptr<ModelManager> ModelManager::create()
 {
 	std::vector<std::unique_ptr<Texture>> loadedTextures;
+
+	std::unique_ptr<Texture> defaultBlackTexture = Texture::create("default_black.png", "default_black");
+	assert(defaultBlackTexture);
+	if (!defaultBlackTexture)
+	{
+		std::cout << "Failed to load texture\n";
+		return std::unique_ptr<ModelManager>();
+	}
+
+	std::unique_ptr<Texture> defaultMaterialTexture = Texture::create("default_material.png", "default_material");
+	assert(defaultMaterialTexture);
+	if (!defaultMaterialTexture)
+	{
+		std::cout << "Failed to load texture\n";
+		return std::unique_ptr<ModelManager>();
+	}
+
+	loadedTextures.push_back(std::move(defaultBlackTexture));
+	loadedTextures.push_back(std::move(defaultMaterialTexture));
 	std::array<std::unique_ptr<Model>, MAX_MODELS> models = loadModels(loadedTextures);
 	for (const auto& model : models)
 	{

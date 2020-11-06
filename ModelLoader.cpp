@@ -1,6 +1,7 @@
 #include "ModelLoader.h"
 #include "Model.h"
 #include "Texture.h"
+#include "Globals.h"
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -81,11 +82,24 @@ Mesh processMesh(aiMesh* mesh, const aiScene* scene, std::vector<std::unique_ptr
     
     aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
     std::vector<std::reference_wrapper<const Texture>> textures;
+   
+    assert(Globals::getTexture(loadedTextures, "default_black"));
+    textures.push_back(*Globals::getTexture(loadedTextures, "default_black"));
+
+    assert(Globals::getTexture(loadedTextures, "default_material"));
+    textures.push_back(*Globals::getTexture(loadedTextures, "default_material"));
+
     loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse", loadedTextures, directory, textures);
     loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular", loadedTextures, directory, textures);
     loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal", loadedTextures, directory, textures);
 
-    return Mesh(std::move(vertices), std::move(indices), std::move(textures), loadMaterial(material));
+    bool materialMesh = true;
+    if (Globals::getTexture(textures, "texture_diffuse"))
+    {
+        materialMesh = false;
+    }
+
+    return Mesh(std::move(vertices), std::move(indices), std::move(textures), loadMaterial(material), materialMesh);
 }
 
 void loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& typeName, std::vector<std::unique_ptr<Texture>>& loadedTextures,
