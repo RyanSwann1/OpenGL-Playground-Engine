@@ -10,8 +10,13 @@
 
 namespace Globals
 {
-	const std::string MODELS_DIRECTORY = "models";
-	const std::string TEXTURES_DIRECTORY = "models/textures/";
+	extern const std::string TEXTURES_DIRECTORY;
+	extern const std::string DEFAULT_BLACK;
+	extern const std::string DEFAULT_MATERIAL;
+	extern const std::string TEXTURE_DIFFUSE;
+	extern const std::string TEXTURE_SPECULAR;
+	extern const std::string TEXTURE_NORMAL;
+	
 	constexpr unsigned int INVALID_OPENGL_ID = 0;	
 
 	inline const Texture* getTexture(const std::vector<std::reference_wrapper<const Texture>>& textures, const std::string& type)

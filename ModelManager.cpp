@@ -63,7 +63,7 @@ std::unique_ptr<ModelManager> ModelManager::create()
 {
 	std::vector<std::unique_ptr<Texture>> loadedTextures;
 
-	std::unique_ptr<Texture> defaultBlackTexture = Texture::create("default_black.png", "default_black");
+	std::unique_ptr<Texture> defaultBlackTexture = Texture::create("default_black.png", Globals::DEFAULT_BLACK);
 	assert(defaultBlackTexture);
 	if (!defaultBlackTexture)
 	{
@@ -71,7 +71,7 @@ std::unique_ptr<ModelManager> ModelManager::create()
 		return std::unique_ptr<ModelManager>();
 	}
 
-	std::unique_ptr<Texture> defaultMaterialTexture = Texture::create("default_material.png", "default_material");
+	std::unique_ptr<Texture> defaultMaterialTexture = Texture::create("default_material.png", Globals::DEFAULT_MATERIAL);
 	assert(defaultMaterialTexture);
 	if (!defaultMaterialTexture)
 	{

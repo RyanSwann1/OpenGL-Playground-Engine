@@ -83,15 +83,15 @@ Mesh processMesh(aiMesh* mesh, const aiScene* scene, std::vector<std::unique_ptr
     aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
     std::vector<std::reference_wrapper<const Texture>> textures;
    
-    assert(Globals::getTexture(loadedTextures, "default_black"));
-    textures.push_back(*Globals::getTexture(loadedTextures, "default_black"));
+    assert(Globals::getTexture(loadedTextures, Globals::DEFAULT_BLACK));
+    textures.push_back(*Globals::getTexture(loadedTextures, Globals::DEFAULT_BLACK));
 
-    assert(Globals::getTexture(loadedTextures, "default_material"));
-    textures.push_back(*Globals::getTexture(loadedTextures, "default_material"));
+    assert(Globals::getTexture(loadedTextures, Globals::DEFAULT_MATERIAL));
+    textures.push_back(*Globals::getTexture(loadedTextures, Globals::DEFAULT_MATERIAL));
 
-    loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse", loadedTextures, directory, textures);
-    loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular", loadedTextures, directory, textures);
-    loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal", loadedTextures, directory, textures);
+    loadMaterialTextures(material, aiTextureType_DIFFUSE, Globals::TEXTURE_DIFFUSE, loadedTextures, directory, textures);
+    loadMaterialTextures(material, aiTextureType_SPECULAR, Globals::TEXTURE_SPECULAR, loadedTextures, directory, textures);
+    loadMaterialTextures(material, aiTextureType_HEIGHT, Globals::TEXTURE_NORMAL, loadedTextures, directory, textures);
 
     return Mesh(std::move(vertices), std::move(indices), std::move(textures), loadMaterial(material));
 }

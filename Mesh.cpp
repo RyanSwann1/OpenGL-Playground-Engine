@@ -114,20 +114,20 @@ void Mesh::render(ShaderHandler& shaderHandler) const
 {
 	bind();
 
-	assert(Globals::getTexture(textures, "default_black"));
+	assert(Globals::getTexture(textures, Globals::DEFAULT_BLACK));
 	glActiveTexture(GL_TEXTURE0);
-	Globals::getTexture(textures, "default_black")->bind();
+	Globals::getTexture(textures, Globals::DEFAULT_BLACK)->bind();
 	glActiveTexture(GL_TEXTURE1);
-	Globals::getTexture(textures, "default_black")->bind();
+	Globals::getTexture(textures, Globals::DEFAULT_BLACK)->bind();
 
-	if (!Globals::getTexture(textures, "texture_diffuse"))
+	if (!Globals::getTexture(textures, Globals::TEXTURE_DIFFUSE))
 	{
-		assert(Globals::getTexture(textures, "default_material"));
+		assert(Globals::getTexture(textures, Globals::DEFAULT_MATERIAL));
 
 		glActiveTexture(GL_TEXTURE0);
-		Globals::getTexture(textures, "default_material")->bind();
+		Globals::getTexture(textures, Globals::DEFAULT_MATERIAL)->bind();
 		glActiveTexture(GL_TEXTURE1);
-		Globals::getTexture(textures, "default_material")->bind();
+		Globals::getTexture(textures, Globals::DEFAULT_MATERIAL)->bind();
 
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);
 	}
@@ -135,7 +135,7 @@ void Mesh::render(ShaderHandler& shaderHandler) const
 	{
 		auto textureDiffuse = std::find_if(textures.cbegin(), textures.cend(), [](const auto& texture)
 		{
-			return texture.get().type == "texture_diffuse";
+			return texture.get().type == Globals::TEXTURE_DIFFUSE;
 		});
 		if (textureDiffuse != textures.cend())
 		{
@@ -146,7 +146,7 @@ void Mesh::render(ShaderHandler& shaderHandler) const
 
 		auto textureSpecular = std::find_if(textures.cbegin(), textures.cend(), [](const auto& texture)
 		{
-			return texture.get().type == "texture_specular";
+			return texture.get().type == Globals::TEXTURE_SPECULAR;
 		});
 		if (textureSpecular != textures.cend())
 		{
