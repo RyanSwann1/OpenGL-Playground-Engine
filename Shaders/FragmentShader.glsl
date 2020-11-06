@@ -59,7 +59,7 @@ vec3 calculatePointLight(vec3 n, Light light)
 
 void main()
 {
-	vec3 n = normalize(vNormal);
+	vec3 n = normalize(vNormal);	
 
 	float diffuseAlpha = texture(texture_diffuse, vTextCoords).a;
 	vec3 ambient = texture(texture_diffuse, vTextCoords).rgb * ambientStrength;
