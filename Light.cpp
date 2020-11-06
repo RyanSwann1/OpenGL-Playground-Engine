@@ -7,9 +7,11 @@
 #include "ShaderHandler.h"
 #endif // DEBUG
 
-Light::Light(const glm::vec3& startingPosition, const glm::vec3& startingColor)
+Light::Light(const glm::vec3& startingPosition, const glm::vec3& startingColor, float radius, float compression)
 	: position(startingPosition),
-	color(startingColor)
+	color(startingColor),
+	radius(radius),
+	compression(compression)
 {
 #ifdef DEBUG
 	MeshGenerator::generateCubeMesh(mesh);

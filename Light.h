@@ -7,7 +7,7 @@ class ShaderHandler;
 #endif // DEBUG
 struct Light
 {
-	Light(const glm::vec3& startingPosition, const glm::vec3& startingColor);
+	Light(const glm::vec3& startingPosition, const glm::vec3& startingColor, float radius, float compression);
 
 #ifdef DEBUG
 	void render(ShaderHandler& shaderHandler) const;
@@ -15,6 +15,8 @@ struct Light
 
 	glm::vec3 position;
 	glm::vec3 color;
+	float radius;
+	float compression;
 #ifdef DEBUG
 	Mesh mesh;
 #endif // DEBUG

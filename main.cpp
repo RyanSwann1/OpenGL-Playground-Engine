@@ -127,14 +127,13 @@ int main()
 	Camera camera;
 
 	std::vector<Light> lights;
-	lights.emplace_back(glm::vec3(-100.0f, 125.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-	lights.emplace_back(glm::vec3(100.0f, 125.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	lights.emplace_back(glm::vec3(-175.0f, 20.5f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f));
+	lights.emplace_back(glm::vec3(-100.0f, 125.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), 200.0f, 2.0f);
+	lights.emplace_back(glm::vec3(100.0f, 125.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 200.0f, 2.0f);
+	lights.emplace_back(glm::vec3(-175.0f, 20.5f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), 200.0f, 2.0f);
 
 	shaderHandler->switchToShader(eShaderType::Default);
 	shaderHandler->setUniform1i(eShaderType::Default, "texture_diffuse", 0);
 	shaderHandler->setUniform1i(eShaderType::Default, "texture_specular", 1);
-
 
 	std::cout << glGetError() << "\n";
 	std::cout << glGetError() << "\n";
@@ -189,6 +188,8 @@ int main()
 			shaderHandler->setUniformVec3(eShaderType::Default, 
 				"uPointLights[" + std::to_string(i) + "].position", glm::vec3(view * glm::vec4(lights[i].position, 1.0f)));
 			shaderHandler->setUniformVec3(eShaderType::Default, "uPointLights[" + std::to_string(i) + "].color", lights[i].color);
+			shaderHandler->setUniform1f(eShaderType::Default, "uPointLights[" + std::to_string(i) + "].radius", lights[i].radius);
+			shaderHandler->setUniform1f(eShaderType::Default, "uPointLights[" + std::to_string(i) + "].compression", lights[i].compression);
 		}
 
 		for (const auto& gameObject : gameObjects)
