@@ -12,8 +12,7 @@ Mesh::Mesh()
 	vertices(),
 	indices(),
 	textures(),
-	material(),
-	materialMesh(false)
+	material()
 {
 	glGenVertexArrays(1, &vaoID);
 	glGenBuffers(1, &vboID);
@@ -21,15 +20,14 @@ Mesh::Mesh()
 }
 
 Mesh::Mesh(std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices, 
-	std::vector<std::reference_wrapper<const Texture>>&& textures, const Material& material, bool materialMesh)
+	std::vector<std::reference_wrapper<const Texture>>&& textures, const Material& material)
 	: vaoID(Globals::INVALID_OPENGL_ID),
 	vboID(Globals::INVALID_OPENGL_ID),
 	indiciesID(Globals::INVALID_OPENGL_ID),
 	vertices(std::move(vertices)),
 	indices(std::move(indices)),
 	textures(std::move(textures)),
-	material(material),
-	materialMesh(materialMesh)
+	material(material)
 {
 	glGenVertexArrays(1, &vaoID);
 	glGenBuffers(1, &vboID);
@@ -43,8 +41,7 @@ Mesh::Mesh(Mesh&& orig) noexcept
 	vertices(std::move(orig.vertices)),
 	indices(std::move(orig.indices)),
 	textures(std::move(orig.textures)),
-	material(orig.material),
-	materialMesh(orig.materialMesh)
+	material(orig.material)
 {
 	orig.vaoID = Globals::INVALID_OPENGL_ID;
 	orig.vboID = Globals::INVALID_OPENGL_ID;
@@ -60,7 +57,6 @@ Mesh& Mesh::operator=(Mesh&& orig) noexcept
 	indices = std::move(orig.indices);
 	textures = std::move(orig.textures);
 	material = orig.material;
-	materialMesh = orig.materialMesh;
 
 	orig.vaoID = Globals::INVALID_OPENGL_ID;
 	orig.vboID = Globals::INVALID_OPENGL_ID;
@@ -124,10 +120,10 @@ void Mesh::render(ShaderHandler& shaderHandler) const
 	glActiveTexture(GL_TEXTURE1);
 	Globals::getTexture(textures, "default_black")->bind();
 
-	if (materialMesh)
+	if (!Globals::getTexture(textures, "texture_diffuse"))
 	{
 		assert(Globals::getTexture(textures, "default_material"));
-		
+
 		glActiveTexture(GL_TEXTURE0);
 		Globals::getTexture(textures, "default_material")->bind();
 		glActiveTexture(GL_TEXTURE1);
@@ -135,8 +131,8 @@ void Mesh::render(ShaderHandler& shaderHandler) const
 
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);
 	}
-	else if(!textures.empty())
-	{ 
+	else
+	{
 		auto textureDiffuse = std::find_if(textures.cbegin(), textures.cend(), [](const auto& texture)
 		{
 			return texture.get().type == "texture_diffuse";

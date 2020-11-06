@@ -34,7 +34,7 @@ struct Mesh : private NonCopyable
 {
 	Mesh();
 	Mesh(std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices, 
-		std::vector<std::reference_wrapper<const Texture>>&& textures, const Material& material, bool materialMesh);
+		std::vector<std::reference_wrapper<const Texture>>&& textures, const Material& material);
 	Mesh(Mesh&&) noexcept;
 	Mesh& operator=(Mesh&&) noexcept;
 	~Mesh();
@@ -50,5 +50,4 @@ struct Mesh : private NonCopyable
 	std::vector<unsigned int> indices;
 	std::vector<std::reference_wrapper<const Texture>> textures;
 	Material material;
-	bool materialMesh;
 };
