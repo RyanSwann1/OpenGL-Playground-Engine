@@ -61,11 +61,8 @@ void main()
 {
 	vec3 n = normalize(vNormal);
 
-	float diffuseAlpha = 1.0;
-	vec3 ambient = vec3(0.0);
-
-	diffuseAlpha = texture(texture_diffuse, vTextCoords).a;
-	ambient = texture(texture_diffuse, vTextCoords).rgb * ambientStrength;
+	float diffuseAlpha = texture(texture_diffuse, vTextCoords).a;
+	vec3 ambient = texture(texture_diffuse, vTextCoords).rgb * ambientStrength;
 	
 	vec3 result = vec3(0.0);
 	for(int i = 0; i < POINT_LIGHT_COUNT; ++i)

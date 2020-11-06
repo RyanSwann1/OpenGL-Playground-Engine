@@ -12,7 +12,8 @@ Mesh::Mesh()
 	vertices(),
 	indices(),
 	textures(),
-	material()
+	material(),
+	materialMesh(false)
 {
 	glGenVertexArrays(1, &vaoID);
 	glGenBuffers(1, &vboID);
@@ -20,14 +21,15 @@ Mesh::Mesh()
 }
 
 Mesh::Mesh(std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices, 
-	std::vector<std::reference_wrapper<const Texture>>&& textures, const Material& material)
+	std::vector<std::reference_wrapper<const Texture>>&& textures, const Material& material, bool materialMesh)
 	: vaoID(Globals::INVALID_OPENGL_ID),
 	vboID(Globals::INVALID_OPENGL_ID),
 	indiciesID(Globals::INVALID_OPENGL_ID),
 	vertices(std::move(vertices)),
 	indices(std::move(indices)),
 	textures(std::move(textures)),
-	material(material)
+	material(material),
+	materialMesh(materialMesh)
 {
 	glGenVertexArrays(1, &vaoID);
 	glGenBuffers(1, &vboID);
@@ -41,7 +43,8 @@ Mesh::Mesh(Mesh&& orig) noexcept
 	vertices(std::move(orig.vertices)),
 	indices(std::move(orig.indices)),
 	textures(std::move(orig.textures)),
-	material(orig.material)
+	material(orig.material),
+	materialMesh(orig.materialMesh)
 {
 	orig.vaoID = Globals::INVALID_OPENGL_ID;
 	orig.vboID = Globals::INVALID_OPENGL_ID;
@@ -57,6 +60,7 @@ Mesh& Mesh::operator=(Mesh&& orig) noexcept
 	indices = std::move(orig.indices);
 	textures = std::move(orig.textures);
 	material = orig.material;
+	materialMesh = orig.materialMesh;
 
 	orig.vaoID = Globals::INVALID_OPENGL_ID;
 	orig.vboID = Globals::INVALID_OPENGL_ID;
@@ -114,9 +118,24 @@ void Mesh::render(ShaderHandler& shaderHandler) const
 {
 	bind();
 
-	shaderHandler.setUniform1i(eShaderType::Default, "uDiffuseTexture", static_cast<int>(false));
-	shaderHandler.setUniform1i(eShaderType::Default, "uSpecularTexture", static_cast<int>(false));
-	if(!textures.empty())
+	assert(Globals::getTexture(textures, "default_black"));
+	glActiveTexture(GL_TEXTURE0);
+	Globals::getTexture(textures, "default_black")->bind();
+	glActiveTexture(GL_TEXTURE1);
+	Globals::getTexture(textures, "default_black")->bind();
+
+	if (materialMesh)
+	{
+		assert(Globals::getTexture(textures, "default_material"));
+		
+		glActiveTexture(GL_TEXTURE0);
+		Globals::getTexture(textures, "default_material")->bind();
+		glActiveTexture(GL_TEXTURE1);
+		Globals::getTexture(textures, "default_material")->bind();
+
+		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);
+	}
+	else if(!textures.empty())
 	{ 
 		auto textureDiffuse = std::find_if(textures.cbegin(), textures.cend(), [](const auto& texture)
 		{
@@ -124,8 +143,8 @@ void Mesh::render(ShaderHandler& shaderHandler) const
 		});
 		if (textureDiffuse != textures.cend())
 		{
-			shaderHandler.setUniform1i(eShaderType::Default, "uDiffuseTexture", static_cast<int>(true));
-			glBindTexture(GL_TEXTURE_2D, textureDiffuse->get().ID);
+			glActiveTexture(GL_TEXTURE0);
+			textureDiffuse->get().bind();
 			glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);
 		}
 
@@ -135,14 +154,10 @@ void Mesh::render(ShaderHandler& shaderHandler) const
 		});
 		if (textureSpecular != textures.cend())
 		{
-			shaderHandler.setUniform1i(eShaderType::Default, "uSpecularTexture", static_cast<int>(true));
-			glBindTexture(GL_TEXTURE_2D, textureSpecular->get().ID);
+			glActiveTexture(GL_TEXTURE1);
+			textureSpecular->get().bind();
 			glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);
 		}
-	}
-	else
-	{
-		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);
 	}
 }
 
