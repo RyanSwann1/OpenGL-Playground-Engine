@@ -11,8 +11,7 @@ Mesh::Mesh()
 	indiciesID(Globals::INVALID_OPENGL_ID),
 	vertices(),
 	indices(),
-	textures(),
-	material()
+	textures()
 {
 	glGenVertexArrays(1, &vaoID);
 	glGenBuffers(1, &vboID);
@@ -20,14 +19,13 @@ Mesh::Mesh()
 }
 
 Mesh::Mesh(std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices, 
-	std::vector<std::reference_wrapper<const Texture>>&& textures, const Material& material)
+	std::vector<std::reference_wrapper<const Texture>>&& textures)
 	: vaoID(Globals::INVALID_OPENGL_ID),
 	vboID(Globals::INVALID_OPENGL_ID),
 	indiciesID(Globals::INVALID_OPENGL_ID),
 	vertices(std::move(vertices)),
 	indices(std::move(indices)),
-	textures(std::move(textures)),
-	material(material)
+	textures(std::move(textures))
 {
 	glGenVertexArrays(1, &vaoID);
 	glGenBuffers(1, &vboID);
@@ -40,8 +38,7 @@ Mesh::Mesh(Mesh&& orig) noexcept
 	indiciesID(orig.indiciesID),
 	vertices(std::move(orig.vertices)),
 	indices(std::move(orig.indices)),
-	textures(std::move(orig.textures)),
-	material(orig.material)
+	textures(std::move(orig.textures))
 {
 	orig.vaoID = Globals::INVALID_OPENGL_ID;
 	orig.vboID = Globals::INVALID_OPENGL_ID;
@@ -56,7 +53,6 @@ Mesh& Mesh::operator=(Mesh&& orig) noexcept
 	vertices = std::move(orig.vertices);
 	indices = std::move(orig.indices);
 	textures = std::move(orig.textures);
-	material = orig.material;
 
 	orig.vaoID = Globals::INVALID_OPENGL_ID;
 	orig.vboID = Globals::INVALID_OPENGL_ID;
@@ -171,11 +167,3 @@ Vertex::Vertex(const glm::vec3& position)
 	textCoords()
 {}
 #endif // DEBUG
-
-//Material
-Material::Material()
-	: diffuse(),
-	specular(),
-	ambient(),
-	shininess(0.0f)
-{}

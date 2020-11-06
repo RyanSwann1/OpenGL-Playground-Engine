@@ -18,7 +18,6 @@ const std::string& directory);
 Mesh processMesh(aiMesh* mesh, const aiScene* scene, std::vector<std::unique_ptr<Texture>>& loadedTextures, const std::string& directory);
 void loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& typeName, std::vector<std::unique_ptr<Texture>>& loadedTextures,
     const std::string& directory, std::vector<std::reference_wrapper<const Texture>>& textures);
-Material loadMaterial(aiMaterial* mat);
 
 bool ModelLoader::loadModel(const std::string& fileName, std::vector<Mesh>& meshes, std::vector<std::unique_ptr<Texture>>& loadedTextures)
 {
@@ -93,7 +92,7 @@ Mesh processMesh(aiMesh* mesh, const aiScene* scene, std::vector<std::unique_ptr
     loadMaterialTextures(material, aiTextureType_SPECULAR, Globals::TEXTURE_SPECULAR, loadedTextures, directory, textures);
     loadMaterialTextures(material, aiTextureType_HEIGHT, Globals::TEXTURE_NORMAL, loadedTextures, directory, textures);
 
-    return Mesh(std::move(vertices), std::move(indices), std::move(textures), loadMaterial(material));
+    return Mesh(std::move(vertices), std::move(indices), std::move(textures));
 }
 
 void loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& typeName, std::vector<std::unique_ptr<Texture>>& loadedTextures,
@@ -125,25 +124,4 @@ void loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string
             }
         }
     }
-}
-
-Material loadMaterial(aiMaterial* mat) 
-{
-    Material material;
-    aiColor3D color(0.0f, 0.0f, 0.0f);
-    float shininess;
-        
-    mat->Get(AI_MATKEY_COLOR_DIFFUSE, color);
-    material.diffuse = glm::vec3(color.r, color.g, color.b);
-
-    mat->Get(AI_MATKEY_COLOR_AMBIENT, color);
-    material.ambient = glm::vec3(color.r, color.g, color.b);
-
-    mat->Get(AI_MATKEY_COLOR_SPECULAR, color);
-    material.specular = glm::vec3(color.r, color.g, color.b);
-
-    mat->Get(AI_MATKEY_SHININESS, shininess);
-    material.shininess = shininess;
-
-    return material;
 }

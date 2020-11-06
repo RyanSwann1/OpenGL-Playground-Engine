@@ -7,16 +7,6 @@
 #include <vector>
 #include <string>
 
-struct Material 
-{
-	Material();
-
-	glm::vec3 diffuse;
-	glm::vec3 specular;
-	glm::vec3 ambient;
-	float shininess;
-};
-
 struct Vertex
 {
 	Vertex(const glm::vec3& position, const glm::vec3& normal, const glm::vec2& textCoords);
@@ -34,7 +24,7 @@ struct Mesh : private NonCopyable
 {
 	Mesh();
 	Mesh(std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices, 
-		std::vector<std::reference_wrapper<const Texture>>&& textures, const Material& material);
+		std::vector<std::reference_wrapper<const Texture>>&& textures);
 	Mesh(Mesh&&) noexcept;
 	Mesh& operator=(Mesh&&) noexcept;
 	~Mesh();
@@ -49,5 +39,4 @@ struct Mesh : private NonCopyable
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
 	std::vector<std::reference_wrapper<const Texture>> textures;
-	Material material;
 };
