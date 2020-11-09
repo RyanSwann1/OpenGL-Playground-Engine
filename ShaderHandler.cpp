@@ -126,9 +126,9 @@ std::unique_ptr<ShaderHandler> ShaderHandler::create()
 	return (shaderLoaded ? std::move(shaderHandler) : std::unique_ptr<ShaderHandler>());
 }
 
-eShaderType ShaderHandler::getActiveShaderType() const
+const ShaderHandler::Shader& ShaderHandler::getCurrentActiveShader() const
 {
-	return m_currentShaderType;
+	return m_shaders[static_cast<int>(m_currentShaderType)];
 }
 
 void ShaderHandler::setUniformMat4f(eShaderType shaderType, const std::string& uniformName, const glm::mat4& matrix)
