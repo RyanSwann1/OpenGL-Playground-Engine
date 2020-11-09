@@ -1,11 +1,23 @@
 #include "Light.h"
+#include "ShaderHandler.h"
 #ifdef DEBUG
 #include "MeshGenerator.h"
 #include "glad.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/transform.hpp"
-#include "ShaderHandler.h"
 #endif // DEBUG
+
+//DirectionalLight
+DirectionalLight::DirectionalLight(ShaderHandler& shaderHandler, const glm::vec3& direction, const glm::vec3& color,
+	float intensity)
+	: direction(direction),
+	color(color),
+	intensity(intensity)
+{
+	shaderHandler.setUniformVec3(eShaderType::Default, "uDirectionalLight", direction);
+	shaderHandler.setUniformVec3(eShaderType::Default, "uDirectionalLightColor", color);
+	shaderHandler.setUniform1f(eShaderType::Default, "uDirectionalLightIntensity", intensity);
+}
 
 Light::Light(const glm::vec3& startingPosition, const glm::vec3& startingColor, float radius, float compression)
 	: position(startingPosition),
