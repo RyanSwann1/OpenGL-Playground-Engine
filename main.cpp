@@ -10,6 +10,8 @@
 #include "Light.h"
 #include "imgui/imgui.h"
 #include "imgui_impl/imgui_wrapper.h"
+#include "glm/gtc/matrix_transform.hpp"
+#include "UniformBuffer.h"
 #include <vector>
 #include <iostream>
 #include <sstream>
@@ -139,6 +141,9 @@ int main()
 	glm::mat4 projection = glm::perspective(glm::radians(camera.FOV),
 		static_cast<float>(windowSize.x) / static_cast<float>(windowSize.y), camera.nearPlaneDistance, camera.farPlaneDistance);
 
+	UniformBuffer matricesUniformBuffer(0, 2 * sizeof(glm::mat4), *shaderHandler, "uMatrices");
+	matricesUniformBuffer.assignBufferSubData<glm::mat4>(static_cast<size_t>(0), projection);
+
 	std::cout << glGetError() << "\n";
 	std::cout << glGetError() << "\n";
 	std::cout << glGetError() << "\n";
@@ -165,13 +170,12 @@ int main()
 		ImGui_SFML_OpenGL3::startFrame();
 		displayOverlayGUI(camera);
 
-		glm::mat4 view = glm::lookAt(camera.position, camera.position + camera.front, camera.up);
-
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		assert(shaderHandler);
 		shaderHandler->switchToShader(eShaderType::Default);
-		shaderHandler->setUniformMat4f(eShaderType::Default, "uProjection", projection);
-		shaderHandler->setUniformMat4f(eShaderType::Default, "uView", view);
+
+		glm::mat4 view = glm::lookAt(camera.position, camera.position + camera.front, camera.up);
+		matricesUniformBuffer.assignBufferSubData<glm::mat4>(sizeof(glm::mat4), view);
 
 		float timeElasped = gameClock.getElapsedTime().asSeconds();
 		for (int i = 0; i < static_cast<int>(lights.size()); ++i)
