@@ -137,7 +137,6 @@ void Mesh::render(ShaderHandler& shaderHandler) const
 		{
 			glActiveTexture(GL_TEXTURE0);
 			textureDiffuse->get().bind();
-			glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);
 		}
 
 		auto textureSpecular = std::find_if(textures.cbegin(), textures.cend(), [](const auto& texture)
@@ -148,8 +147,9 @@ void Mesh::render(ShaderHandler& shaderHandler) const
 		{
 			glActiveTexture(GL_TEXTURE1);
 			textureSpecular->get().bind();
-			glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);
 		}
+
+		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);
 	}
 }
 
