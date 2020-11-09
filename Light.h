@@ -24,8 +24,8 @@ struct Light
 	void render(ShaderHandler& shaderHandler) const;
 #endif // DEBUG
 
-	glm::vec3 position;
-	glm::vec3 color;
+	glm::vec4 position;
+	glm::vec4 color;
 	float radius;
 	float compression;
 #ifdef DEBUG

@@ -191,9 +191,9 @@ int main()
 				lights[i].position.x += xOffset;
 			}
 
-			shaderHandler->setUniformVec3(eShaderType::Default, 
-				"uPointLights[" + std::to_string(i) + "].position", glm::vec3(view * glm::vec4(lights[i].position, 1.0f)));
-			shaderHandler->setUniformVec3(eShaderType::Default, "uPointLights[" + std::to_string(i) + "].color", lights[i].color);
+			shaderHandler->setUniformVec4(eShaderType::Default, 
+				"uPointLights[" + std::to_string(i) + "].position", view * lights[i].position);
+			shaderHandler->setUniformVec4(eShaderType::Default, "uPointLights[" + std::to_string(i) + "].color", lights[i].color);
 			shaderHandler->setUniform1f(eShaderType::Default, "uPointLights[" + std::to_string(i) + "].radius", lights[i].radius);
 			shaderHandler->setUniform1f(eShaderType::Default, "uPointLights[" + std::to_string(i) + "].compression", lights[i].compression);
 		}
