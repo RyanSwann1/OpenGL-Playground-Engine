@@ -168,6 +168,22 @@ void ShaderHandler::setUniformVec3(eShaderType shaderType, const std::string& un
 #endif // !DEBUG
 }
 
+void ShaderHandler::setUniformVec4(eShaderType shaderType, const std::string& uniformName, const glm::vec4& v)
+{
+	assert(shaderType == m_currentShaderType);
+	int uniformLocation = m_shaders[static_cast<int>(shaderType)].getUniformLocation(uniformName);
+	if (uniformLocation != INVALID_UNIFORM_LOCATION)
+	{
+		glUniform4fv(uniformLocation, 1, &v[0]);
+	}
+#ifndef DEBUG
+	else
+	{
+		assert(uniformLocation != INVALID_UNIFORM_LOCATION);
+	}
+#endif // !DEBUG
+}
+
 void ShaderHandler::setUniform1i(eShaderType shaderType, const std::string& uniformName, int value)
 {
 	assert(shaderType == m_currentShaderType);
