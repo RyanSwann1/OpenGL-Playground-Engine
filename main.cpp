@@ -120,6 +120,7 @@ int main()
 		return -1;
 	}
 
+	const glm::vec3 directionalLight{ -0.14, 0.54, 0.0 };
 	const std::vector<GameObject> gameObjects = loadGameObjects(*modelManager);
 	sf::Clock deltaClock;
 	sf::Clock gameClock;
@@ -133,6 +134,7 @@ int main()
 	shaderHandler->switchToShader(eShaderType::Default);
 	shaderHandler->setUniform1i(eShaderType::Default, "texture_diffuse", 0);
 	shaderHandler->setUniform1i(eShaderType::Default, "texture_specular", 1);
+	shaderHandler->setUniformVec3(eShaderType::Default, "uDirectionalLight", directionalLight);
 
 	glm::mat4 projection = glm::perspective(glm::radians(camera.FOV),
 		static_cast<float>(windowSize.x) / static_cast<float>(windowSize.y), camera.nearPlaneDistance, camera.farPlaneDistance);

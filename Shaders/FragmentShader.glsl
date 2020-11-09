@@ -43,13 +43,12 @@ vec3 calculatePointLight(vec3 n, Light light)
 {
 	vec3 lightDirection = normalize(light.position - vFragPosition);
 
-	float distance = length(light.position - vFragPosition);
-	float attenuation = pow(smoothstep(light.radius, 0, length(light.position - vFragPosition)), light.compression);
-
 	vec3 diffuse = texture(texture_diffuse, vTextCoords).rgb * max(dot(lightDirection, n), 0.0) * light.color;	
 	
 	vec3 specular = texture(texture_specular, vTextCoords).rgb * light.color * specularStrength * 
 	pow(max(dot(normalize(-vFragPosition), normalize(reflect(-lightDirection, n))), 0.0), 64);
+
+	float attenuation = pow(smoothstep(light.radius, 0, length(light.position - vFragPosition)), light.compression);
 	
 	return diffuse * attenuation + specular * attenuation;
 }
