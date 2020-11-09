@@ -20,21 +20,21 @@ in vec2 vTextCoords;
 uniform sampler2D texture_diffuse;
 uniform sampler2D texture_specular;
 uniform Light uPointLights[POINT_LIGHT_COUNT];
+uniform vec3 uDirectionalLightColor;
+uniform float uDirectionalLightIntensity;
 
 const float ambientStrength = 0.2;
 const float specularStrength = 0.5;
-const vec3 directionalLightColor = vec3(1.0, 1.0, 1.0);
-const float directionalLightItensity = 0.3;
 
 vec3 calculateDirectionalLight(vec3 n)
 {
 	vec3 nDirectionalLight = normalize(vDirectionalLightDirection);
 
 	vec3 diffuse = texture(texture_diffuse, vTextCoords).rgb * 
-		max(dot(nDirectionalLight, n), 0.0) * directionalLightColor * directionalLightItensity;
+		max(dot(nDirectionalLight, n), 0.0) * uDirectionalLightColor * uDirectionalLightIntensity;
 
-	vec3 specular = texture(texture_specular, vTextCoords).rgb * directionalLightColor * directionalLightItensity * specularStrength * 
-	pow(max(dot(normalize(-vFragPosition), normalize(-reflect(nDirectionalLight, n))), 0.0), 64);
+	vec3 specular = texture(texture_specular, vTextCoords).rgb * uDirectionalLightColor * uDirectionalLightIntensity * specularStrength * 
+		pow(max(dot(normalize(-vFragPosition), normalize(-reflect(nDirectionalLight, n))), 0.0), 64);
 	
 	return diffuse + specular;
 }
@@ -46,7 +46,7 @@ vec3 calculatePointLight(vec3 n, Light light)
 	vec3 diffuse = texture(texture_diffuse, vTextCoords).rgb * max(dot(lightDirection, n), 0.0) * light.color;	
 	
 	vec3 specular = texture(texture_specular, vTextCoords).rgb * light.color * specularStrength * 
-	pow(max(dot(normalize(-vFragPosition), normalize(reflect(-lightDirection, n))), 0.0), 64);
+		pow(max(dot(normalize(-vFragPosition), normalize(reflect(-lightDirection, n))), 0.0), 64);
 
 	float attenuation = pow(smoothstep(light.radius, 0, length(light.position - vFragPosition)), light.compression);
 	
