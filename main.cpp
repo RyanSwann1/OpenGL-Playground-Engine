@@ -10,7 +10,6 @@
 #include "Light.h"
 #include "imgui/imgui.h"
 #include "imgui_impl/imgui_wrapper.h"
-
 #include <vector>
 #include <iostream>
 #include <sstream>
@@ -135,6 +134,9 @@ int main()
 	shaderHandler->setUniform1i(eShaderType::Default, "texture_diffuse", 0);
 	shaderHandler->setUniform1i(eShaderType::Default, "texture_specular", 1);
 
+	glm::mat4 projection = glm::perspective(glm::radians(camera.FOV),
+		static_cast<float>(windowSize.x) / static_cast<float>(windowSize.y), camera.nearPlaneDistance, camera.farPlaneDistance);
+
 	std::cout << glGetError() << "\n";
 	std::cout << glGetError() << "\n";
 	std::cout << glGetError() << "\n";
@@ -162,8 +164,6 @@ int main()
 		displayOverlayGUI(camera);
 
 		glm::mat4 view = glm::lookAt(camera.position, camera.position + camera.front, camera.up);
-		glm::mat4 projection = glm::perspective(glm::radians(camera.FOV),
-			static_cast<float>(windowSize.x) / static_cast<float>(windowSize.y), camera.nearPlaneDistance, camera.farPlaneDistance);
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		assert(shaderHandler);

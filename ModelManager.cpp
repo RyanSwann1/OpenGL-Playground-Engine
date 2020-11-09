@@ -55,8 +55,8 @@ namespace
 
 ModelManager::ModelManager(std::array<std::unique_ptr<Model>, MAX_MODELS>&& models, 
 	std::vector<std::unique_ptr<Texture>>&& loadedTextures)
-	: models(std::move(models)),
-	loadedTextures(std::move(loadedTextures))	
+	: m_models(std::move(models)),
+	m_loadedTextures(std::move(loadedTextures))	
 {}
 
 std::unique_ptr<ModelManager> ModelManager::create()
@@ -95,11 +95,11 @@ std::unique_ptr<ModelManager> ModelManager::create()
 
 const Model& ModelManager::getModel(const std::string& modelName) const
 {
-	auto model = std::find_if(models.cbegin(), models.cend(), [&modelName](const auto& model)
+	auto model = std::find_if(m_models.cbegin(), m_models.cend(), [&modelName](const auto& model)
 	{
 		return model->name == modelName;
 	});
-	assert(model != models.cend());
+	assert(model != m_models.cend());
 
 	return *(*model);
 }

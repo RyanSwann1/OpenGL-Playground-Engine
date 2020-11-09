@@ -33,10 +33,12 @@ struct Mesh : private NonCopyable
 	void attachToVAO() const;
 	void render(ShaderHandler& shaderHandler) const;
 
-	unsigned int vaoID;
-	unsigned int vboID;
-	unsigned int indiciesID;
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
 	std::vector<std::reference_wrapper<const Texture>> textures;
+
+private:
+	unsigned int vaoID;
+	unsigned int vboID;
+	unsigned int indiciesID;
 };

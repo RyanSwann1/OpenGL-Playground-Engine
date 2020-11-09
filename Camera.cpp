@@ -7,7 +7,7 @@ namespace
 	constexpr float MOVEMENT_SPEED = 10.0f;
 	constexpr float SENSITIVITY = 4.0f;
 	constexpr float NEAR_PLANE_DISTANCE = 0.1f;
-	constexpr float FAR_PLANE_DISTANCE = 15000.0f;
+	constexpr float FAR_PLANE_DISTANCE = 1500.0f;
 	constexpr float FIELD_OF_VIEW = 50.0f;
 	constexpr float MIN_VELOCITY = 0.2f;
 	constexpr float VELOCITY_DROPOFF = 0.9f;
