@@ -126,6 +126,11 @@ std::unique_ptr<ShaderHandler> ShaderHandler::create()
 	return (shaderLoaded ? std::move(shaderHandler) : std::unique_ptr<ShaderHandler>());
 }
 
+const ShaderHandler::Shader& ShaderHandler::getShader(eShaderType shaderType) const
+{
+	return m_shaders[static_cast<int>(m_currentShaderType)];
+}
+
 const ShaderHandler::Shader& ShaderHandler::getCurrentActiveShader() const
 {
 	return m_shaders[static_cast<int>(m_currentShaderType)];
