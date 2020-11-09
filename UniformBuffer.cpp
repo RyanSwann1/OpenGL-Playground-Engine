@@ -13,12 +13,19 @@ UniformBuffer::UniformBuffer(unsigned int bindingPoint, size_t bufferSize, const
 	bind();	
 	glBufferData(GL_UNIFORM_BUFFER, bufferSize, nullptr, GL_STATIC_DRAW);
 	glBindBufferRange(GL_UNIFORM_BUFFER, m_bindingPoint, m_ID, 0, bufferSize);
-	unsigned int shaderID = shaderHandler.getCurrentActiveShader().getID();
-	glUniformBlockBinding(shaderID, glGetUniformBlockIndex(shaderID, uniformBlockName.data()), m_bindingPoint);
+
+	unsigned int defaultShaderID = shaderHandler.getShader(eShaderType::Default).getID();
+	glUniformBlockBinding(defaultShaderID, glGetUniformBlockIndex(defaultShaderID, uniformBlockName.data()), m_bindingPoint);
+
+#ifdef DEBUG
+	unsigned int debugShaderID = shaderHandler.getShader(eShaderType::Debug).getID();
+	glUniformBlockBinding(debugShaderID, glGetUniformBlockIndex(defaultShaderID, uniformBlockName.data()), m_bindingPoint);
+#endif // DEBUG
 }
 
 UniformBuffer::~UniformBuffer()
 {
+	assert(m_ID != Globals::INVALID_OPENGL_ID);
 	glDeleteBuffers(1, &m_ID);
 }
 
