@@ -33,3 +33,11 @@ void UniformBuffer::bind() const
 {
 	glBindBuffer(GL_UNIFORM_BUFFER, m_ID);
 }
+
+void UniformBuffer::assignBufferSubData(size_t offset, const glm::mat4& mat4) const
+{
+	assert(offset < m_bufferSize);
+
+	bind();
+	glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(glm::mat4), glm::value_ptr(mat4));
+}

@@ -133,7 +133,7 @@ int main()
 	lights.emplace_back(glm::vec3(-175.0f, 20.5f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), 200.0f, 2.0f);
 
 	shaderHandler->switchToShader(eShaderType::Default);
-	DirectionalLight directionalLight(*shaderHandler, { -0.14, 0.54, 0.0 }, { 1.0f, 1.0f, 1.0f }, 0.1f);
+	DirectionalLight directionalLight(*shaderHandler, { -0.14, 0.54, 0.0 }, { 1.0f, 1.0f, 1.0f }, 0.2f);
 
 	shaderHandler->setUniform1i(eShaderType::Default, "texture_diffuse", 0);
 	shaderHandler->setUniform1i(eShaderType::Default, "texture_specular", 1);
@@ -142,7 +142,9 @@ int main()
 		static_cast<float>(windowSize.x) / static_cast<float>(windowSize.y), camera.nearPlaneDistance, camera.farPlaneDistance);
 
 	UniformBuffer matricesUniformBuffer(0, 2 * sizeof(glm::mat4), *shaderHandler, "uMatrices");
-	matricesUniformBuffer.assignBufferSubData<glm::mat4>(static_cast<size_t>(0), projection);
+	matricesUniformBuffer.assignBufferSubData(static_cast<size_t>(0), projection);
+
+	UniformBuffer lightsUniformBuffer(1, lights.size() * sizeof(Light), *shaderHandler, "uLights");
 
 	std::cout << glGetError() << "\n";
 	std::cout << glGetError() << "\n";
@@ -175,7 +177,7 @@ int main()
 		shaderHandler->switchToShader(eShaderType::Default);
 
 		glm::mat4 view = glm::lookAt(camera.position, camera.position + camera.front, camera.up);
-		matricesUniformBuffer.assignBufferSubData<glm::mat4>(sizeof(glm::mat4), view);
+		matricesUniformBuffer.assignBufferSubData(sizeof(glm::mat4), view);
 
 		float timeElasped = gameClock.getElapsedTime().asSeconds();
 		for (int i = 0; i < static_cast<int>(lights.size()); ++i)

@@ -17,14 +17,7 @@ public:
 
 	void bind() const;
 
-	template <class T>
-	void assignBufferSubData(size_t offset, const T& data) const
-	{
-		assert(offset < m_bufferSize);
-
-		bind();
-		glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(T), glm::value_ptr(data));
-	}
+	void assignBufferSubData(size_t offset, const glm::mat4& mat4) const;
 
 private:
 	unsigned int m_ID;
