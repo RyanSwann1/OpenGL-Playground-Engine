@@ -178,9 +178,12 @@ int main()
 
 		glm::mat4 view = glm::lookAt(camera.position, camera.position + camera.front, camera.up);
 		matricesUniformBuffer.assignBufferSubData(sizeof(glm::mat4), view);
-
+		
+		glm::mat3 viewNormal = glm::mat3(glm::transpose(glm::inverse(view)));
 		shaderHandler->setUniformVec3(eShaderType::Default, "uViewPosition", 
-			glm::mat3(glm::transpose(glm::inverse(view))) * camera.position);
+			viewNormal * camera.position);
+		shaderHandler->setUniformVec3(eShaderType::Default, "uDirectionalLight",
+			viewNormal * directionalLight.direction);
 
 		float timeElasped = gameClock.getElapsedTime().asSeconds();
 		for (int i = 0; i < static_cast<int>(lights.size()); ++i)
