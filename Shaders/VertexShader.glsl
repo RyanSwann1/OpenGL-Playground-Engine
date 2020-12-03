@@ -25,7 +25,7 @@ void main()
 {
 	gl_Position = uProjection * uView * uModel * vec4(aPos, 1.0);
 	vFragPosition = vec3(uView * uModel * vec4(aPos, 1.0));
-	vViewDirection = mat3(transpose(inverse(uView))) * uViewPosition;
+	vViewDirection = uViewPosition;
 	vNormal = mat3(transpose(inverse(uView * uModel))) * aNormal;
 	vDirectionalLightDirection = mat3(transpose(inverse(uView))) * uDirectionalLight;
 	vTextCoords = aTextCoords;
