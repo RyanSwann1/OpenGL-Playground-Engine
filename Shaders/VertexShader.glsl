@@ -10,11 +10,11 @@ layout (std140) uniform uMatrices
 	mat4 uView;
 };
 
-uniform mat4 uModel;
 uniform vec3 uDirectionalLight;
 uniform vec3 uViewPosition;
 uniform mat3 uModelMatrixNormal;
 uniform mat4 uProjViewModel;
+uniform mat4 uViewModel;
 
 out vec3 vFragPosition;
 out vec3 vNormal;
@@ -26,7 +26,7 @@ out vec3 vViewDirection;
 void main()
 {
 	gl_Position = uProjViewModel * vec4(aPos, 1.0);
-	vFragPosition = vec3(uView * uModel * vec4(aPos, 1.0));
+	vFragPosition = vec3(uViewModel * vec4(aPos, 1.0));
 	vViewDirection = uViewPosition;
 	vNormal = uModelMatrixNormal * aNormal;
 	vDirectionalLight = uDirectionalLight;

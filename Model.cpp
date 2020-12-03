@@ -41,8 +41,8 @@ void Model::render(ShaderHandler& shaderHandler, const Transform& transform, con
 	model = glm::rotate(model, glm::radians(transform.rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
 	
 	shaderHandler.setUniformMat4f(eShaderType::Default, "uProjViewModel", projection * view * model);
+	shaderHandler.setUniformMat4f(eShaderType::Default, "uViewModel", view * model);
 	shaderHandler.setUniformMat3f(eShaderType::Default, "uModelMatrixNormal", glm::transpose(glm::inverse(view * model)));
-	shaderHandler.setUniformMat4f(eShaderType::Default, "uModel", model);
 
 	for (const auto& mesh : meshes)
 	{
