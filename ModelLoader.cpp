@@ -91,7 +91,7 @@ Mesh processMesh(aiMesh* mesh, const aiScene* scene, std::vector<std::unique_ptr
     loadMaterialTextures(material, aiTextureType_DIFFUSE, Globals::TEXTURE_DIFFUSE, loadedTextures, directory, textures);
     loadMaterialTextures(material, aiTextureType_SPECULAR, Globals::TEXTURE_SPECULAR, loadedTextures, directory, textures);
     loadMaterialTextures(material, aiTextureType_HEIGHT, Globals::TEXTURE_NORMAL, loadedTextures, directory, textures);
-
+    
     return Mesh(std::move(vertices), std::move(indices), std::move(textures));
 }
 

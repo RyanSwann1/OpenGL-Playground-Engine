@@ -179,6 +179,8 @@ int main()
 		glm::mat4 view = glm::lookAt(camera.position, camera.position + camera.front, camera.up);
 		matricesUniformBuffer.assignBufferSubData(sizeof(glm::mat4), view);
 
+		shaderHandler->setUniformVec3(eShaderType::Default, "uViewPosition", camera.position);
+
 		float timeElasped = gameClock.getElapsedTime().asSeconds();
 		for (int i = 0; i < static_cast<int>(lights.size()); ++i)
 		{
