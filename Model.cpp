@@ -32,13 +32,15 @@ std::unique_ptr<Model> Model::create(const std::string & fileName, std::vector<s
 	return std::unique_ptr<Model>(new Model(std::move(meshes), fileName));
 }
 
-void Model::render(ShaderHandler& shaderHandler, const Transform& transform, const glm::mat4& view) const
+void Model::render(ShaderHandler& shaderHandler, const Transform& transform, const glm::mat4& view,
+	const glm::mat4& projection) const
 {	
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::translate(model, transform.position);
 	model = glm::scale(model, transform.scale);
 	model = glm::rotate(model, glm::radians(transform.rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
 	
+	shaderHandler.setUniformMat4f(eShaderType::Default, "uProjViewModel", projection * view * model);
 	shaderHandler.setUniformMat3f(eShaderType::Default, "uModelMatrixNormal", glm::transpose(glm::inverse(view * model)));
 	shaderHandler.setUniformMat4f(eShaderType::Default, "uModel", model);
 

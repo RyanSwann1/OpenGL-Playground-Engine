@@ -10,7 +10,7 @@ class GameObject
 public:
 	GameObject(const Model& model, const Transform& transform);
 
-	void render(ShaderHandler& shaderHandler, const glm::mat4& view) const;
+	void render(ShaderHandler& shaderHandler, const glm::mat4& view, const glm::mat4& projection) const;
 
 private:
 	std::reference_wrapper<const Model> m_model;

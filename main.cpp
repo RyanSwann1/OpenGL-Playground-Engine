@@ -208,7 +208,7 @@ int main()
 
 		for (const auto& gameObject : gameObjects)
 		{
-			gameObject.render(*shaderHandler, view);
+			gameObject.render(*shaderHandler, view, projection);
 		}
 
 #ifdef DEBUG
