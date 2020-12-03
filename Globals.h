@@ -16,7 +16,15 @@ namespace Globals
 	extern const std::string TEXTURE_DIFFUSE;
 	extern const std::string TEXTURE_SPECULAR;
 	extern const std::string TEXTURE_NORMAL;
-	
+
+	extern const std::string U_DIRECTIONAL_LIGHT;
+	extern const std::string U_VIEW_POSITION;
+	extern const std::string U_MODEL_MATRIX_NORMAL;
+	extern const std::string U_PROJ_VIEW_MODEL;
+	extern const std::string U_VIEW_MODEL;
+	extern const std::string U_DIRECTIONAL_LIGHT_COLOR;
+	extern const std::string U_DIRECTIONAL_LIGHT_INTENSITY;
+
 	constexpr unsigned int INVALID_OPENGL_ID = 0;	
 
 	inline const Texture* getTexture(const std::vector<std::reference_wrapper<const Texture>>& textures, const std::string& type)

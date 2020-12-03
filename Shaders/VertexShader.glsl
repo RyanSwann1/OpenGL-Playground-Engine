@@ -17,11 +17,10 @@ uniform mat4 uProjViewModel;
 uniform mat4 uViewModel;
 
 out vec3 vFragPosition;
-out vec3 vNormal;
-out vec2 vTextCoords;
-out vec3 vLightPosition;
-out vec3 vDirectionalLight;
 out vec3 vViewDirection;
+out vec3 vNormal;
+out vec3 vDirectionalLight;
+out vec2 vTextCoords;
 
 void main()
 {

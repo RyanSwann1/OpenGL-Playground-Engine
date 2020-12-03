@@ -1,5 +1,6 @@
 #include "Light.h"
 #include "ShaderHandler.h"
+#include "Globals.h"
 #ifdef DEBUG
 #include "MeshGenerator.h"
 #include "glad.h"
@@ -14,9 +15,9 @@ DirectionalLight::DirectionalLight(ShaderHandler& shaderHandler, const glm::vec3
 	color(color),
 	intensity(intensity)
 {
-	shaderHandler.setUniformVec3(eShaderType::Default, "uDirectionalLight", direction);
-	shaderHandler.setUniformVec3(eShaderType::Default, "uDirectionalLightColor", color);
-	shaderHandler.setUniform1f(eShaderType::Default, "uDirectionalLightIntensity", intensity);
+	shaderHandler.setUniformVec3(eShaderType::Default, Globals::U_DIRECTIONAL_LIGHT, direction);
+	shaderHandler.setUniformVec3(eShaderType::Default, Globals::U_DIRECTIONAL_LIGHT_COLOR, color);
+	shaderHandler.setUniform1f(eShaderType::Default, Globals::U_DIRECTIONAL_LIGHT_INTENSITY, intensity);
 }
 
 //Light
