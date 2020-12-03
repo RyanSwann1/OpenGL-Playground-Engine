@@ -136,6 +136,22 @@ const ShaderHandler::Shader& ShaderHandler::getCurrentActiveShader() const
 	return m_shaders[static_cast<int>(m_currentShaderType)];
 }
 
+void ShaderHandler::setUniformMat3f(eShaderType shaderType, const std::string& uniformName, const glm::mat3& matrix)
+{
+	assert(shaderType == m_currentShaderType);
+	int uniformLocation = m_shaders[static_cast<int>(shaderType)].getUniformLocation(uniformName);
+	if (uniformLocation != INVALID_UNIFORM_LOCATION)
+	{
+		glUniformMatrix3fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(matrix));
+	}
+#ifndef DEBUG
+	else
+	{
+		assert(uniformLocation != INVALID_UNIFORM_LOCATION);
+	}
+#endif // !DEBUG
+}
+
 void ShaderHandler::setUniformMat4f(eShaderType shaderType, const std::string& uniformName, const glm::mat4& matrix)
 {
 	assert(shaderType == m_currentShaderType);

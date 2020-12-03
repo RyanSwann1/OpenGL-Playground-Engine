@@ -45,6 +45,7 @@ public:
 	const Shader& getShader(eShaderType shaderType) const;
 	const Shader& getCurrentActiveShader() const;
 
+	void setUniformMat3f(eShaderType shaderType, const std::string& uniformName, const glm::mat3& matrix);
 	void setUniformMat4f(eShaderType shaderType, const std::string& uniformName, const glm::mat4& matrix);
 	void setUniformVec3(eShaderType shaderType, const std::string& uniformName, const glm::vec3& v);
 	void setUniformVec4(eShaderType shaderType, const std::string& uniformName, const glm::vec4& v);
