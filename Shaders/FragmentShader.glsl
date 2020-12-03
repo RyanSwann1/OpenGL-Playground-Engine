@@ -12,7 +12,7 @@ struct Light
 
 out vec4 color;
 
-in vec3 vDirectionalLightDirection;
+in vec3 vDirectionalLight;
 in vec3 vFragPosition;
 in vec3 vNormal;
 in vec2 vTextCoords;
@@ -30,7 +30,7 @@ const float specularComponent = 128;
 
 vec3 calculateDirectionalLight(vec3 n)
 {
-	vec3 nDirectionalLight = normalize(vDirectionalLightDirection);
+	vec3 nDirectionalLight = normalize(vDirectionalLight);
 
 	vec3 diffuse = texture(texture_diffuse, vTextCoords).rgb * 
 		max(dot(nDirectionalLight, n), 0.0) * uDirectionalLightColor * uDirectionalLightIntensity;

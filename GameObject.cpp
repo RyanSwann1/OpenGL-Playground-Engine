@@ -6,7 +6,7 @@ GameObject::GameObject(const Model& model, const Transform& transform)
 	m_transform(transform)
 {}
 
-void GameObject::render(ShaderHandler& shaderHandler) const
+void GameObject::render(ShaderHandler& shaderHandler, const glm::mat4& view) const
 {
-	m_model.get().render(shaderHandler, m_transform);
+	m_model.get().render(shaderHandler, m_transform, view);
 }

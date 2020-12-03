@@ -205,7 +205,7 @@ int main()
 
 		for (const auto& gameObject : gameObjects)
 		{
-			gameObject.render(*shaderHandler);
+			gameObject.render(*shaderHandler, view);
 		}
 
 #ifdef DEBUG
